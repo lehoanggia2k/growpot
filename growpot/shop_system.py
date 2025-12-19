@@ -24,7 +24,7 @@ class ShopManager:
         """Create and show the shop dialog with tabbed interface"""
         shop_win = Toplevel(root)
         shop_win.title(self.ui.shop_title)
-        shop_win.geometry("400x350")
+        shop_win.geometry("500x450")
         shop_win.resizable(True, True)
         
         # Main frame

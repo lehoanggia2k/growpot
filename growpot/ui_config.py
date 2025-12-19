@@ -59,7 +59,7 @@ class UIConfig:
     shop_tab_pet_food: str = "Thức ăn"
     shop_tab_seeds: str = "Hạt giống"
     shop_tab_pots: str = "Chậu"
-    shop_tab_pets: str = "Thú cưng"  # New tab for pets
+    shop_tab_pets: str = "Thú cưng"  
     
     # Shop item descriptions
     shop_pet_food_desc: str = "Cho thú cưng ăn để chúng làm việc"
