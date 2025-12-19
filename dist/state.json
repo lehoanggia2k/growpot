@@ -1,0 +1,19 @@
+{
+  "growth": -1.0,
+  "water": 4.7241777439997525,
+  "growth_water_deficit": 0.0,
+  "x": 1888,
+  "y": 947,
+  "last_update_ts": 1765606839.61974,
+  "pot_type": "default",
+  "plant_type": "basic",
+  "harvested_count": 1,
+  "last_harvest_ts": 1765606687.3327656,
+  "money": 0,
+  "inventory": {
+    "basic": 1
+  },
+  "unlocked_pots": [
+    "default"
+  ]
+}
