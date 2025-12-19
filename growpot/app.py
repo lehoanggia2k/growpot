@@ -4,16 +4,16 @@ import time
 import tkinter as tk
 from pathlib import Path
 
-from growplot.state import GameState, load_state, now_ts, save_state
-from growplot.game_config import GameConfig
-from growplot.ui_config import UIConfig
-from growplot.ui_components import UIManager
-from growplot.game_logic import GameEngine
-from growplot.animation_system import AnimationManager
-from growplot.warehouse_system import WarehouseManager
-from growplot.pet_system import PetManager
-from growplot.shop_system import ShopManager
-from growplot.event_handlers import EventHandler
+from growpot.state import GameState, load_state, now_ts, save_state
+from growpot.game_config import GameConfig
+from growpot.ui_config import UIConfig
+from growpot.ui_components import UIManager
+from growpot.game_logic import GameEngine
+from growpot.animation_system import AnimationManager
+from growpot.warehouse_system import WarehouseManager
+from growpot.pet_system import PetManager
+from growpot.shop_system import ShopManager
+from growpot.event_handlers import EventHandler
 
 
 class GrowPlotApp:
@@ -151,7 +151,7 @@ class GrowPlotApp:
     
     def _initialize_shop_inventory(self):
         """Initialize seed inventory and pet food for new games"""
-        from growplot.game_config import ShopConfig
+        from growpot.game_config import ShopConfig
         shop_cfg = ShopConfig()
         
         # Only initialize if inventories are empty (new game)

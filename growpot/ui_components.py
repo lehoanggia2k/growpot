@@ -5,8 +5,8 @@ from tkinter import Menu, ttk
 from pathlib import Path
 from typing import Callable
 
-from growplot.ui_config import UIConfig
-from growplot.state import GameState
+from growpot.ui_config import UIConfig
+from growpot.state import GameState
 
 
 class UIManager:

@@ -2,16 +2,16 @@ from __future__ import annotations
 
 import tkinter as tk
 from tkinter import Toplevel, ttk
-from growplot.state import GameState
-from growplot.game_config import GameConfig
-from growplot.ui_config import UIConfig
+from growpot.state import GameState
+from growpot.game_config import GameConfig
+from growpot.ui_config import UIConfig
 
 
 class ShopManager:
     """Manages the shop system for buying items, seeds, pots, and pets"""
     
     def __init__(self, config: GameConfig, ui_config: UIConfig):
-        from growplot.game_config import ShopConfig
+        from growpot.game_config import ShopConfig
         self.cfg = config
         self.ui = ui_config
         self.shop_cfg = ShopConfig()

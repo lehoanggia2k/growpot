@@ -3,8 +3,8 @@ from __future__ import annotations
 import tkinter as tk
 from pathlib import Path
 
-from growplot.app import GrowPlotApp
-from growplot.assets_gen import generate_assets
+from growpot.app import GrowPlotApp
+from growpot.assets_gen import generate_assets
 
 
 def main() -> None:

@@ -5,9 +5,9 @@ import tkinter as tk
 from pathlib import Path
 from typing import Optional
 
-from growplot.anim import FrameSet, load_frames
+from growpot.anim import FrameSet, load_frames
 from PIL import ImageTk
-from growplot.game_config import GameConfig
+from growpot.game_config import GameConfig
 
 
 class AnimationManager:

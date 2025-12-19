@@ -9,8 +9,8 @@ try:
 except Exception:  # pragma: no cover
     winsound = None
 
-from growplot.state import GameState, save_state, now_ts
-from growplot.ui_config import UIConfig
+from growpot.state import GameState, save_state, now_ts
+from growpot.ui_config import UIConfig
 
 
 class EventHandler:

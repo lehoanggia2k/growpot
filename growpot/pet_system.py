@@ -2,9 +2,9 @@ from __future__ import annotations
 
 import tkinter as tk
 from tkinter import Toplevel, Menu
-from growplot.state import GameState, now_ts
-from growplot.game_config import GameConfig
-from growplot.ui_config import UIConfig
+from growpot.state import GameState, now_ts
+from growpot.game_config import GameConfig
+from growpot.ui_config import UIConfig
 
 
 class PetManager:

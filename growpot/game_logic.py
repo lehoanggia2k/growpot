@@ -1,8 +1,8 @@
 from __future__ import annotations
 
 import math
-from growplot.state import GameState, now_ts
-from growplot.game_config import GameConfig
+from growpot.state import GameState, now_ts
+from growpot.game_config import GameConfig
 
 
 class GameEngine:
