@@ -25,7 +25,7 @@ class ShopManager:
         shop_win = Toplevel(root)
         shop_win.title(self.ui.shop_title)
         shop_win.geometry("400x350")
-        shop_win.resizable(False, False)
+        shop_win.resizable(True, True)
         
         # Main frame
         main_frame = tk.Frame(shop_win, padx=20, pady=20)
@@ -75,10 +75,9 @@ class ShopManager:
         )
         close_btn.pack(pady=(10, 0))
     
-    def _populate_pet_food_tab(self, parent: tk.Frame, shop_win: Toplevel, state: GameState, buy_callback: callable):
-        """Populate the pet food tab"""
-        # Scrollable frame for pet food
-        canvas = tk.Canvas(parent, height=250)
+    def _create_scrollable_tab_frame(self, parent: tk.Frame):
+        """Create a scrollable frame setup with improved UX"""
+        canvas = tk.Canvas(parent)
         scrollbar = ttk.Scrollbar(parent, orient="vertical", command=canvas.yview)
         scrollable_frame = tk.Frame(canvas)
 
@@ -90,7 +89,7 @@ class ShopManager:
         canvas.create_window((0, 0), window=scrollable_frame, anchor="nw")
         canvas.configure(yscrollcommand=scrollbar.set)
 
-        # Bind mouse wheel events for scrolling
+        # Bind mouse wheel events for scrolling on the entire parent frame
         def _on_mousewheel(event):
             canvas.yview_scroll(int(-1*(event.delta/120)), "units")
 
@@ -100,17 +99,24 @@ class ShopManager:
             elif event.num == 5:
                 canvas.yview_scroll(1, "units")
 
-        canvas.bind("<Enter>", lambda e: canvas.focus_set())
-        canvas.bind("<MouseWheel>", _on_mousewheel)  # Windows
-        canvas.bind("<Button-4>", _on_mousewheel_linux)  # Linux scroll up
-        canvas.bind("<Button-5>", _on_mousewheel_linux)  # Linux scroll down
+        parent.bind("<Enter>", lambda e: parent.focus_set())
+        parent.bind("<MouseWheel>", _on_mousewheel)  # Windows
+        parent.bind("<Button-4>", _on_mousewheel_linux)  # Linux scroll up
+        parent.bind("<Button-5>", _on_mousewheel_linux)  # Linux scroll down
+
+        canvas.pack(side="left", fill="both", expand=True)
+        scrollbar.pack(side="right", fill="y")
+
+        return canvas, scrollable_frame, scrollbar
+
+    def _populate_pet_food_tab(self, parent: tk.Frame, shop_win: Toplevel, state: GameState, buy_callback: callable):
+        """Populate the pet food tab"""
+        # Scrollable frame for pet food
+        canvas, scrollable_frame, scrollbar = self._create_scrollable_tab_frame(parent)
 
         # Pet Food item
         item_frame = tk.Frame(scrollable_frame, padx=20, pady=20)
         item_frame.pack(fill="both", expand=True)
-
-        canvas.pack(side="left", fill="y")
-        scrollbar.pack(side="right", fill="y")
 
         # Item info
         name_label = tk.Label(
@@ -185,39 +191,11 @@ class ShopManager:
     def _populate_seeds_tab(self, parent: tk.Frame, shop_win: Toplevel, state: GameState, buy_callback: callable):
         """Populate the seeds tab"""
         # Scrollable frame for seeds
-        canvas = tk.Canvas(parent, height=250)
-        scrollbar = ttk.Scrollbar(parent, orient="vertical", command=canvas.yview)
-        scrollable_frame = tk.Frame(canvas)
-
-        scrollable_frame.bind(
-            "<Configure>",
-            lambda e: canvas.configure(scrollregion=canvas.bbox("all"))
-        )
-
-        canvas.create_window((0, 0), window=scrollable_frame, anchor="nw")
-        canvas.configure(yscrollcommand=scrollbar.set)
-
-        # Bind mouse wheel events for scrolling
-        def _on_mousewheel(event):
-            canvas.yview_scroll(int(-1*(event.delta/120)), "units")
-
-        def _on_mousewheel_linux(event):
-            if event.num == 4:
-                canvas.yview_scroll(-1, "units")
-            elif event.num == 5:
-                canvas.yview_scroll(1, "units")
-
-        canvas.bind("<Enter>", lambda e: canvas.focus_set())
-        canvas.bind("<MouseWheel>", _on_mousewheel)  # Windows
-        canvas.bind("<Button-4>", _on_mousewheel_linux)  # Linux scroll up
-        canvas.bind("<Button-5>", _on_mousewheel_linux)  # Linux scroll down
+        canvas, scrollable_frame, scrollbar = self._create_scrollable_tab_frame(parent)
 
         # Populate seeds
         for plant_type, stats in self.cfg.PLANT_STATS.items():
             self._create_seed_item(scrollable_frame, plant_type, stats, state, shop_win, buy_callback)
-
-        canvas.pack(side="left", fill="y")
-        scrollbar.pack(side="right", fill="y")
     
     def _create_seed_item(self, parent: tk.Frame, plant_type: str, stats, state: GameState,
                           shop_win: Toplevel, buy_callback: callable):
@@ -281,32 +259,7 @@ class ShopManager:
                           buy_callback: callable, switch_callback: callable):
         """Populate the pots tab with owned and available pots"""
         # Scrollable frame for pots
-        canvas = tk.Canvas(parent, height=250)
-        scrollbar = ttk.Scrollbar(parent, orient="vertical", command=canvas.yview)
-        scrollable_frame = tk.Frame(canvas)
-
-        scrollable_frame.bind(
-            "<Configure>",
-            lambda e: canvas.configure(scrollregion=canvas.bbox("all"))
-        )
-
-        canvas.create_window((0, 0), window=scrollable_frame, anchor="nw")
-        canvas.configure(yscrollcommand=scrollbar.set)
-
-        # Bind mouse wheel events for scrolling
-        def _on_mousewheel(event):
-            canvas.yview_scroll(int(-1*(event.delta/120)), "units")
-
-        def _on_mousewheel_linux(event):
-            if event.num == 4:
-                canvas.yview_scroll(-1, "units")
-            elif event.num == 5:
-                canvas.yview_scroll(1, "units")
-
-        canvas.bind("<Enter>", lambda e: canvas.focus_set())
-        canvas.bind("<MouseWheel>", _on_mousewheel)  # Windows
-        canvas.bind("<Button-4>", _on_mousewheel_linux)  # Linux scroll up
-        canvas.bind("<Button-5>", _on_mousewheel_linux)  # Linux scroll down
+        canvas, scrollable_frame, scrollbar = self._create_scrollable_tab_frame(parent)
 
         # Owned pots section
         owned_frame = tk.Frame(scrollable_frame, padx=20, pady=20)
@@ -338,9 +291,6 @@ class ShopManager:
         for pot_type, pot_stats in self.cfg.POT_STATS.items():
             if pot_type not in state.unlocked_pots and pot_stats.price > 0:
                 self._create_pot_purchase_item(available_frame, pot_type, pot_stats, shop_win, state, buy_callback)
-
-        canvas.pack(side="left", fill="y")
-        scrollbar.pack(side="right", fill="y")
     
     def _create_owned_pot_item(self, parent: tk.Frame, pot_type: str, state: GameState,
                                shop_win: Toplevel, switch_callback: callable):
@@ -417,39 +367,11 @@ class ShopManager:
                           buy_callback: callable, activate_callback: callable):
         """Populate the pets tab for purchasing pets"""
         # Scrollable frame for pets
-        canvas = tk.Canvas(parent, height=250)
-        scrollbar = ttk.Scrollbar(parent, orient="vertical", command=canvas.yview)
-        scrollable_frame = tk.Frame(canvas)
-
-        scrollable_frame.bind(
-            "<Configure>",
-            lambda e: canvas.configure(scrollregion=canvas.bbox("all"))
-        )
-
-        canvas.create_window((0, 0), window=scrollable_frame, anchor="nw")
-        canvas.configure(yscrollcommand=scrollbar.set)
-
-        # Bind mouse wheel events for scrolling
-        def _on_mousewheel(event):
-            canvas.yview_scroll(int(-1*(event.delta/120)), "units")
-
-        def _on_mousewheel_linux(event):
-            if event.num == 4:
-                canvas.yview_scroll(-1, "units")
-            elif event.num == 5:
-                canvas.yview_scroll(1, "units")
-
-        canvas.bind("<Enter>", lambda e: canvas.focus_set())
-        canvas.bind("<MouseWheel>", _on_mousewheel)  # Windows
-        canvas.bind("<Button-4>", _on_mousewheel_linux)  # Linux scroll up
-        canvas.bind("<Button-5>", _on_mousewheel_linux)  # Linux scroll down
+        canvas, scrollable_frame, scrollbar = self._create_scrollable_tab_frame(parent)
 
         # Populate pets
         for pet_type, pet_stats in self.cfg.PET_STATS.items():
             self._create_pet_item(scrollable_frame, pet_type, pet_stats, state, shop_win, buy_callback, activate_callback)
-
-        canvas.pack(side="left", fill="y")
-        scrollbar.pack(side="right", fill="y")
     
     def _create_pet_item(self, parent: tk.Frame, pet_type: str, pet_stats, state: GameState,
                          shop_win: Toplevel, buy_callback: callable, activate_callback: callable):

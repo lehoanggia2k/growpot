@@ -1,11 +1,11 @@
 {
-  "growth": 1771.169535808287,
+  "growth": 1837.8705334275996,
   "water": 0.0,
-  "growth_water_deficit": 5829.948488440568,
-  "x": 1599,
-  "y": 603,
-  "last_update_ts": 1766127821.2702696,
-  "pot_type": "default",
+  "growth_water_deficit": 6044.547497956606,
+  "x": 0,
+  "y": 0,
+  "last_update_ts": 1766128250.590367,
+  "pot_type": "wood",
   "plant_type": "daisy",
   "harvested_count": 29,
   "last_harvest_ts": 1766058582.3171537,
@@ -18,8 +18,8 @@
     "rose": 4
   },
   "unlocked_pots": [
-    "wood",
-    "default"
+    "default",
+    "wood"
   ],
   "active_pet": "cat",
   "pet_last_fed_ts": 1766058800.8907597,
