@@ -1,22 +1,23 @@
 {
-  "growth": 1989.774800537626,
+  "growth": -1.0,
   "water": 0.0,
-  "growth_water_deficit": 6504.863458896085,
+  "growth_water_deficit": 0.0,
   "x": 0,
   "y": 0,
-  "last_update_ts": 1766129171.286518,
-  "pot_type": "wood",
-  "plant_type": "daisy",
-  "harvested_count": 29,
-  "last_harvest_ts": 1766058582.3171537,
+  "last_update_ts": 1766134415.0757265,
+  "pot_type": "default",
+  "plant_type": "rose",
+  "harvested_count": 32,
+  "last_harvest_ts": 1766134399.963024,
   "money": 2770,
   "inventory": {
-    "basic": 29
+    "basic": 29,
+    "daisy": 2,
+    "rose": 1
   },
   "seed_inventory": {
     "basic": 10,
-    "rose": 4,
-    "daisy": 1
+    "rose": 3
   },
   "unlocked_pots": [
     "wood",

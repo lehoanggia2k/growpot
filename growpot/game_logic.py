@@ -144,7 +144,9 @@ class GameEngine:
             return False  # No change
         if pot_type not in state.unlocked_pots:
             return False  # Pot not unlocked
-        
+        if state.growth >= 0:
+            return False  # Cannot change pot when plant is growing
+
         state.pot_type = pot_type
         return True
     
