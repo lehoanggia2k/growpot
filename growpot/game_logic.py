@@ -26,12 +26,10 @@ class GameEngine:
         # Water decays
         if state.water > 0:
             state.water = max(0.0, state.water - effective_water_decay * dt)
-        
-        # Track water deficit for yield reduction
-        water_threshold = 0.5
-        if state.water < water_threshold:
-            deficit = (water_threshold - state.water) * dt
-            state.growth_water_deficit += deficit
+
+        # Track if water ever reached zero (simple quality system)
+        if state.water <= 0.01 and not state.water_ever_depleted:
+            state.water_ever_depleted = True
         
         # Calculate effective growth rate based on plant and pot
         plant_stats = self.cfg.PLANT_STATS[state.plant_type]
@@ -72,14 +70,10 @@ class GameEngine:
         # Determine quality based on water and harvest timing
         quality = self._calculate_harvest_quality(state, plant_stats)
 
-        # Apply quality modifiers
+        # Apply quality modifiers (simple system)
         if quality == "poor":
-            # Poor quality: yield reduction based on water deficit
-            full_growth_time = plant_stats.growth_time_sec
-            max_deficit = 0.5 * full_growth_time
-            deficit_ratio = min(1.0, state.growth_water_deficit / max_deficit)
-            yield_reduction = 0.5 * deficit_ratio  # Max 50% reduction
-            effective_yield = max(1, int(base_yield * (1.0 - yield_reduction)))
+            # Poor quality: 50% reduction for ever running out of water
+            effective_yield = max(1, int(base_yield * 0.5))
         elif quality == "normal":
             # Normal quality: standard yield
             effective_yield = base_yield
@@ -96,6 +90,7 @@ class GameEngine:
         # Harvest: make pot empty, add to inventory
         state.growth = -1.0  # Empty pot
         state.growth_water_deficit = 0.0  # Reset deficit
+        state.water_ever_depleted = False  # Reset depletion flag
         state.last_harvest_ts = now_ts()
 
         return effective_yield, quality
@@ -109,6 +104,7 @@ class GameEngine:
         state.growth = 0.0
         state.water = 0.0
         state.growth_water_deficit = 0.0
+        state.water_ever_depleted = False  # Reset depletion flag
         # Reset bug state
         state.bug_active = False
         state.bug_appearance_time = 0.0
@@ -121,11 +117,12 @@ class GameEngine:
         """Plant a seed of the specified type"""
         if not self.can_plant_seed(state):
             return False
-        
+
         state.plant_type = plant_type
         state.growth = 0.0
         state.water = 0.0
         state.growth_water_deficit = 0.0
+        state.water_ever_depleted = False  # Reset depletion flag
         return True
     
     def check_pet_auto_watering(self, state: GameState):
@@ -198,8 +195,8 @@ class GameEngine:
 
     def _calculate_harvest_quality(self, state: GameState, plant_stats) -> str:
         """Calculate harvest quality based on water and timing"""
-        # Check water sufficiency (no deficit = sufficient water)
-        water_sufficient = state.growth_water_deficit <= 0.01  # Very small threshold
+        # Check if water ever depleted (simple system: never ran out of water)
+        water_sufficient = not state.water_ever_depleted
 
         # Check harvest timing for excellent quality
         # Excellent: harvest within 20% growth time after ripening

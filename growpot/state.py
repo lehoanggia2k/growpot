@@ -14,6 +14,8 @@ class GameState:
     water: float = 0.0
     # Accumulated water deficit during growth (affects yield)
     growth_water_deficit: float = 0.0
+    # True if water ever reached zero during growth
+    water_ever_depleted: bool = False
 
     # window position
     x: int | None = None
@@ -86,6 +88,7 @@ def load_state(path: Path = DEFAULT_STATE_FILE) -> GameState:
             growth=float(data.get("growth", 0.0)),
             water=float(data.get("water", 0.0)),
             growth_water_deficit=float(data.get("growth_water_deficit", 0.0)),
+            water_ever_depleted=bool(data.get("water_ever_depleted", False)),
             x=data.get("x"),
             y=data.get("y"),
             last_update_ts=float(data.get("last_update_ts", now_ts())),
