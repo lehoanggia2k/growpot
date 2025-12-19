@@ -16,11 +16,11 @@ class ShopManager:
         self.ui = ui_config
         self.shop_cfg = ShopConfig()
     
-    def show_shop(self, root: tk.Tk, state: GameState, 
-                  buy_pet_food_callback: callable, buy_seeds_callback: callable,
-                  buy_pot_callback: callable, buy_pet_callback: callable,
-                  switch_pot_callback: callable, activate_pet_callback: callable,
-                  update_money_callback: callable):
+    def show_shop(self, root: tk.Tk, state: GameState,
+                  buy_pet_food_callback: callable, buy_net_callback: callable,
+                  buy_seeds_callback: callable, buy_pot_callback: callable,
+                  buy_pet_callback: callable, switch_pot_callback: callable,
+                  activate_pet_callback: callable, update_money_callback: callable):
         """Create and show the shop dialog with tabbed interface"""
         shop_win = Toplevel(root)
         shop_win.title(self.ui.shop_title)
@@ -60,7 +60,7 @@ class ShopManager:
         notebook.add(pets_frame, text=self.ui.shop_tab_pets)
         
         # Populate tabs
-        self._populate_pet_food_tab(pet_food_frame, shop_win, state, buy_pet_food_callback)
+        self._populate_pet_food_tab(pet_food_frame, shop_win, state, buy_pet_food_callback, buy_net_callback)
         self._populate_seeds_tab(seeds_frame, shop_win, state, buy_seeds_callback)
         self._populate_pots_tab(pots_frame, shop_win, state, buy_pot_callback, switch_pot_callback)
         self._populate_pets_tab(pets_frame, shop_win, state, buy_pet_callback, activate_pet_callback)
@@ -109,84 +109,158 @@ class ShopManager:
 
         return canvas, scrollable_frame, scrollbar
 
-    def _populate_pet_food_tab(self, parent: tk.Frame, shop_win: Toplevel, state: GameState, buy_callback: callable):
+    def _populate_pet_food_tab(self, parent: tk.Frame, shop_win: Toplevel, state: GameState, buy_pet_food_callback: callable, buy_net_callback: callable):
         """Populate the pet food tab"""
         # Scrollable frame for pet food
         canvas, scrollable_frame, scrollbar = self._create_scrollable_tab_frame(parent)
 
         # Pet Food item
-        item_frame = tk.Frame(scrollable_frame, padx=20, pady=20)
-        item_frame.pack(fill="both", expand=True)
+        pet_food_frame = tk.Frame(scrollable_frame, padx=20, pady=20)
+        pet_food_frame.pack(fill="both", expand=True)
 
-        # Item info
+        # Pet Food Item info
         name_label = tk.Label(
-            item_frame,
+            pet_food_frame,
             text="Pet Food",
             font=("Segoe UI", 12, "bold")
         )
         name_label.pack(anchor="w", pady=(0, 5))
 
         desc_label = tk.Label(
-            item_frame,
+            pet_food_frame,
             text=self.ui.shop_pet_food_desc,
             font=("Segoe UI", 10),
             fg="gray"
         )
         desc_label.pack(anchor="w", pady=(0, 10))
 
-        # Quantity selector
-        quantity_frame = tk.Frame(item_frame)
-        quantity_frame.pack(anchor="w", pady=(0, 10))
+        # Pet Food Quantity selector
+        pet_food_quantity_frame = tk.Frame(pet_food_frame)
+        pet_food_quantity_frame.pack(anchor="w", pady=(0, 10))
 
-        quantity_label = tk.Label(
-            quantity_frame,
+        pet_food_quantity_label = tk.Label(
+            pet_food_quantity_frame,
             text="Số lượng:",
             font=("Segoe UI", 10)
         )
-        quantity_label.pack(side="left", padx=(0, 10))
+        pet_food_quantity_label.pack(side="left", padx=(0, 10))
 
-        quantity_var = tk.IntVar(value=1)
-        quantity_spinbox = tk.Spinbox(
-            quantity_frame,
+        pet_food_quantity_var = tk.IntVar(value=1)
+        pet_food_quantity_spinbox = tk.Spinbox(
+            pet_food_quantity_frame,
             from_=1,
             to=99,
-            textvariable=quantity_var,
+            textvariable=pet_food_quantity_var,
             width=5,
             font=("Segoe UI", 10)
         )
-        quantity_spinbox.pack(side="left")
+        pet_food_quantity_spinbox.pack(side="left")
 
-        # Dynamic price display
-        price_var = tk.StringVar()
-        price_var.set(self.ui.shop_price_label.format(50))
+        # Pet Food Dynamic price display
+        pet_food_price_var = tk.StringVar()
+        pet_food_price_var.set(self.ui.shop_price_label.format(50))
 
-        def update_price(*args):
-            quantity = quantity_var.get()
+        def update_pet_food_price(*args):
+            quantity = pet_food_quantity_var.get()
             total_cost = 50 * quantity
-            price_var.set(self.ui.shop_price_label.format(total_cost))
+            pet_food_price_var.set(self.ui.shop_price_label.format(total_cost))
 
-        quantity_var.trace_add("write", update_price)
+        pet_food_quantity_var.trace_add("write", update_pet_food_price)
 
-        price_label = tk.Label(
-            item_frame,
-            textvariable=price_var,
+        pet_food_price_label = tk.Label(
+            pet_food_frame,
+            textvariable=pet_food_price_var,
             font=("Segoe UI", 11, "bold"),
             fg="blue"
         )
-        price_label.pack(anchor="w", pady=(0, 10))
+        pet_food_price_label.pack(anchor="w", pady=(0, 10))
 
-        # Buy button
-        buy_btn = tk.Button(
-            item_frame,
+        # Pet Food Buy button
+        pet_food_buy_btn = tk.Button(
+            pet_food_frame,
             text=self.ui.shop_buy_button,
-            command=lambda: self._buy_pet_food(quantity_var.get(), shop_win, state, buy_callback),
+            command=lambda: self._buy_pet_food(pet_food_quantity_var.get(), shop_win, state, buy_pet_food_callback),
             font=("Segoe UI", 14, "bold"),
             relief="raised",
             bg="lightgreen",
             padx=20,
             pady=10
         )
-        buy_btn.pack(pady=(15, 0))
+        pet_food_buy_btn.pack(pady=(15, 0))
+
+        # Net item
+        net_frame = tk.Frame(scrollable_frame, padx=20, pady=20)
+        net_frame.pack(fill="both", expand=True)
+
+        # Net Item info
+        net_name_label = tk.Label(
+            net_frame,
+            text="Net",
+            font=("Segoe UI", 12, "bold")
+        )
+        net_name_label.pack(anchor="w", pady=(0, 5))
+
+        net_desc_label = tk.Label(
+            net_frame,
+            text="Catch bugs that appear on plants",
+            font=("Segoe UI", 10),
+            fg="gray"
+        )
+        net_desc_label.pack(anchor="w", pady=(0, 10))
+
+        # Net Quantity selector
+        net_quantity_frame = tk.Frame(net_frame)
+        net_quantity_frame.pack(anchor="w", pady=(0, 10))
+
+        net_quantity_label = tk.Label(
+            net_quantity_frame,
+            text="Số lượng:",
+            font=("Segoe UI", 10)
+        )
+        net_quantity_label.pack(side="left", padx=(0, 10))
+
+        net_quantity_var = tk.IntVar(value=1)
+        net_quantity_spinbox = tk.Spinbox(
+            net_quantity_frame,
+            from_=1,
+            to=99,
+            textvariable=net_quantity_var,
+            width=5,
+            font=("Segoe UI", 10)
+        )
+        net_quantity_spinbox.pack(side="left")
+
+        # Net Dynamic price display
+        net_price_var = tk.StringVar()
+        net_price_var.set(self.ui.shop_price_label.format(20))
+
+        def update_net_price(*args):
+            quantity = net_quantity_var.get()
+            total_cost = 20 * quantity
+            net_price_var.set(self.ui.shop_price_label.format(total_cost))
+
+        net_quantity_var.trace_add("write", update_net_price)
+
+        net_price_label = tk.Label(
+            net_frame,
+            textvariable=net_price_var,
+            font=("Segoe UI", 11, "bold"),
+            fg="blue"
+        )
+        net_price_label.pack(anchor="w", pady=(0, 10))
+
+        # Net Buy button
+        net_buy_btn = tk.Button(
+            net_frame,
+            text=self.ui.shop_buy_button,
+            command=lambda: self._buy_net(net_quantity_var.get(), shop_win, state, buy_net_callback),
+            font=("Segoe UI", 14, "bold"),
+            relief="raised",
+            bg="lightgreen",
+            padx=20,
+            pady=10
+        )
+        net_buy_btn.pack(pady=(15, 0))
     
     def _populate_seeds_tab(self, parent: tk.Frame, shop_win: Toplevel, state: GameState, buy_callback: callable):
         """Populate the seeds tab"""
@@ -202,9 +276,9 @@ class ShopManager:
         """Create a seed item widget"""
         seed_frame = tk.Frame(parent, padx=20, pady=10)
         seed_frame.pack(fill="x", padx=10, pady=5)
-        
+
         plant_name = plant_type.capitalize()
-        
+
         # Plant name
         name_label = tk.Label(
             seed_frame,
@@ -212,7 +286,7 @@ class ShopManager:
             font=("Segoe UI", 11, "bold")
         )
         name_label.pack(anchor="w", pady=(0, 5))
-        
+
         # Plant description
         plant_desc = self.shop_cfg.plant_descriptions.get(plant_type, "")
         if plant_desc:
@@ -223,37 +297,72 @@ class ShopManager:
                 fg="gray"
             )
             desc_label.pack(anchor="w", pady=(0, 5))
-        
-        # Stock or price info
+
+        # Current stock info
         current_stock = state.seed_inventory.get(plant_type, 0)
-        if current_stock > 0:
-            stock_label = tk.Label(
-                seed_frame,
-                text=self.ui.shop_seed_stock_label.format(current_stock),
-                font=("Segoe UI", 10),
-                fg="green"
-            )
-            stock_label.pack(anchor="w", pady=(0, 5))
-        else:
-            price_label = tk.Label(
-                seed_frame,
-                text=self.ui.shop_price_label.format(stats.seed_price),
-                font=("Segoe UI", 10),
-                fg="blue"
-            )
-            price_label.pack(anchor="w", pady=(0, 5))
-        
-        # Buy button (only if no stock)
-        if current_stock == 0 and stats.seed_price > 0:
-            buy_btn = tk.Button(
-                seed_frame,
-                text=self.ui.shop_buy_button,
-                command=lambda: self._buy_seeds(plant_type, 1, stats.seed_price, shop_win, state, buy_callback),
-                font=("Segoe UI", 9),
-                relief="raised",
-                bg="lightblue"
-            )
-            buy_btn.pack(pady=(5, 0))
+        stock_label = tk.Label(
+            seed_frame,
+            text=self.ui.shop_seed_stock_label.format(current_stock),
+            font=("Segoe UI", 10),
+            fg="green"
+        )
+        stock_label.pack(anchor="w", pady=(0, 5))
+
+        # Quantity selector
+        seed_quantity_frame = tk.Frame(seed_frame)
+        seed_quantity_frame.pack(anchor="w", pady=(0, 10))
+
+        seed_quantity_label = tk.Label(
+            seed_quantity_frame,
+            text="Số lượng:",
+            font=("Segoe UI", 10)
+        )
+        seed_quantity_label.pack(side="left", padx=(0, 10))
+
+        seed_quantity_var = tk.IntVar(value=1)
+        seed_quantity_spinbox = tk.Spinbox(
+            seed_quantity_frame,
+            from_=1,
+            to=99,
+            textvariable=seed_quantity_var,
+            width=5,
+            font=("Segoe UI", 10)
+        )
+        seed_quantity_spinbox.pack(side="left")
+
+        # Dynamic price display
+        seed_price_var = tk.StringVar()
+        seed_price_var.set(self.ui.shop_price_label.format(stats.seed_price))
+
+        def update_seed_price(*args):
+            quantity = seed_quantity_var.get()
+            total_cost = stats.seed_price * quantity
+            seed_price_var.set(self.ui.shop_price_label.format(total_cost))
+
+        seed_quantity_var.trace_add("write", update_seed_price)
+
+        seed_price_label = tk.Label(
+            seed_frame,
+            textvariable=seed_price_var,
+            font=("Segoe UI", 11, "bold"),
+            fg="blue"
+        )
+        seed_price_label.pack(anchor="w", pady=(0, 10))
+
+        # Buy button (always available)
+        buy_btn = tk.Button(
+            seed_frame,
+            text=self.ui.shop_buy_button,
+            command=lambda: self._buy_seeds(plant_type, seed_quantity_var.get(),
+                                          stats.seed_price * seed_quantity_var.get(),
+                                          shop_win, state, buy_callback),
+            font=("Segoe UI", 14, "bold"),
+            relief="raised",
+            bg="lightgreen",
+            padx=20,
+            pady=10
+        )
+        buy_btn.pack(pady=(15, 0))
     
     def _populate_pots_tab(self, parent: tk.Frame, shop_win: Toplevel, state: GameState,
                           buy_callback: callable, switch_callback: callable):
@@ -449,6 +558,15 @@ class ShopManager:
             shop_win.destroy()
         else:
             self._show_purchase_error(shop_win)
+
+    def _buy_net(self, quantity: int, shop_win: Toplevel, state: GameState, buy_callback: callable):
+        """Handle net purchase"""
+        cost = 20 * quantity
+        success = buy_callback(quantity, cost)
+        if success:
+            shop_win.destroy()
+        else:
+            self._show_purchase_error(shop_win)
     
     def _buy_seeds(self, plant_type: str, quantity: int, cost: int, shop_win: Toplevel,
                    state: GameState, buy_callback: callable):
@@ -523,6 +641,15 @@ class ShopManager:
 
         state.money -= cost
         state.pet_food += quantity
+        return True
+
+    def buy_net_transaction(self, state: GameState, quantity: int, cost: int) -> bool:
+        """Perform net purchase transaction"""
+        if quantity <= 0 or cost < 0 or state.money < cost:
+            return False
+
+        state.money -= cost
+        state.net_quantity += quantity
         return True
     
     def buy_seeds_transaction(self, state: GameState, plant_type: str, quantity: int, cost: int) -> bool:

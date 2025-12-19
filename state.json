@@ -1,33 +1,38 @@
 {
   "growth": -1.0,
-  "water": 0.0,
+  "water": 3.461624400001021,
   "growth_water_deficit": 0.0,
-  "x": 0,
-  "y": 0,
-  "last_update_ts": 1766134415.0757265,
+  "x": 1368,
+  "y": 611,
+  "last_update_ts": 1766144539.79164,
   "pot_type": "default",
-  "plant_type": "rose",
-  "harvested_count": 32,
-  "last_harvest_ts": 1766134399.963024,
-  "money": 2770,
+  "plant_type": "daisy",
+  "harvested_count": 55,
+  "last_harvest_ts": 1766144538.3037343,
+  "money": 2110,
   "inventory": {
-    "basic": 29,
-    "daisy": 2,
-    "rose": 1
+    "basic": 31,
+    "daisy": 22,
+    "rose": 2,
+    "bug": 3
   },
   "seed_inventory": {
-    "basic": 10,
-    "rose": 3
+    "basic": 5,
+    "rose": 2,
+    "daisy": 1
   },
   "unlocked_pots": [
-    "wood",
-    "default"
+    "default",
+    "wood"
   ],
   "active_pet": "cat",
-  "pet_last_fed_ts": 1766058800.8907597,
-  "pet_last_worked_ts": 1766058800.8907611,
-  "pet_food": 11,
+  "pet_last_fed_ts": 1766142275.5591307,
+  "pet_last_worked_ts": 1766144538.0457304,
+  "pet_food": 8,
   "unlocked_pets": [
     "cat"
-  ]
+  ],
+  "bug_active": false,
+  "bug_appearance_time": 0.0,
+  "net_quantity": 12
 }

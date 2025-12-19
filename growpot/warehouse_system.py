@@ -67,14 +67,18 @@ class WarehouseManager:
         item_frame = tk.Frame(parent)
         item_frame.pack(fill="x", pady=2)
         
-        # Get plant stats
-        plant_stats = self.cfg.PLANT_STATS.get(plant_type)
-        if not plant_stats:
-            return
-        
-        # Item info
-        plant_name = plant_type.capitalize()
-        sell_price = plant_stats.harvest_price_per_item
+        # Handle bugs specially
+        if plant_type == "bug":
+            plant_name = "Bug"
+            sell_price = self.cfg.bug_sell_price
+        else:
+            # Get plant stats
+            plant_stats = self.cfg.PLANT_STATS.get(plant_type)
+            if not plant_stats:
+                return
+
+            plant_name = plant_type.capitalize()
+            sell_price = plant_stats.harvest_price_per_item
         total_value = quantity * sell_price
         
         info_label = tk.Label(
@@ -151,7 +155,10 @@ class WarehouseManager:
         total_value = 0
         for plant_type, quantity in state.inventory.items():
             if quantity > 0:
-                plant_stats = self.cfg.PLANT_STATS.get(plant_type)
-                if plant_stats:
-                    total_value += quantity * plant_stats.harvest_price_per_item
+                if plant_type == "bug":
+                    total_value += quantity * self.cfg.bug_sell_price
+                else:
+                    plant_stats = self.cfg.PLANT_STATS.get(plant_type)
+                    if plant_stats:
+                        total_value += quantity * plant_stats.harvest_price_per_item
         return total_value

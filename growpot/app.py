@@ -203,7 +203,16 @@ class GrowPlotApp:
         
         # Update progress bars
         self.ui_manager.update_progress_bars(self.state.growth, self.state.water, self.cfg.plant_at)
-        
+
+        # Update bug display
+        if self.state.bug_active:
+            # Show bug above the pot
+            bug_x = self.ui_manager.max_canvas_width // 2
+            bug_y = self.ui_manager.max_canvas_height // 2 - 30  # Above the plant
+            self.ui_manager.show_bug(bug_x, bug_y, self._handle_bug_click)
+        else:
+            self.ui_manager.hide_bug()
+
         # Save state periodically
         if (now - self._last_save_perf) * 1000.0 >= self.cfg.save_every_ms:
             self._last_save_perf = now
@@ -220,16 +229,16 @@ class GrowPlotApp:
     
     def _handle_harvest(self):
         """Handle harvest action"""
-        yield_amount = self.game_engine.harvest_plant(self.state)
+        yield_amount, quality = self.game_engine.harvest_plant(self.state)
         if yield_amount > 0:
             # Add to inventory
             if self.state.plant_type not in self.state.inventory:
                 self.state.inventory[self.state.plant_type] = 0
             self.state.inventory[self.state.plant_type] += yield_amount
-            
+
             # Update harvested_count for backward compatibility
             self.state.harvested_count += yield_amount
-            
+
             # Reset animation
             self.animation_manager.reset_animation_index()
             save_state(self.state)
@@ -242,26 +251,20 @@ class GrowPlotApp:
     
     def _handle_plant_seed(self, plant_type: str):
         """Handle seed planting"""
+        # Check if planting is allowed (pot must be empty)
+        if not self.game_engine.can_plant_seed(self.state):
+            return  # Cannot plant on occupied pot
+
         # Check if player has seeds in inventory
         current_stock = self.state.seed_inventory.get(plant_type, 0)
         if current_stock <= 0:
-            # No seeds, try to buy if not free
-            stats = self.cfg.PLANT_STATS[plant_type]
-            if stats.seed_price > 0 and self.state.money >= stats.seed_price:
-                # Buy seeds first, then plant
-                success = self.shop_manager.buy_seeds_transaction(self.state, plant_type, 1, stats.seed_price)
-                if success:
-                    self.ui_manager.update_money_display(self.state.money)
-                else:
-                    return  # Cannot buy seeds
-            else:
-                return  # No seeds and can't buy
-        else:
-            # Use existing seeds
-            self.state.seed_inventory[plant_type] -= 1
-            if self.state.seed_inventory[plant_type] == 0:
-                del self.state.seed_inventory[plant_type]
-        
+            return  # No seeds available, cannot plant
+
+        # Use existing seeds (these get consumed)
+        self.state.seed_inventory[plant_type] -= 1
+        if self.state.seed_inventory[plant_type] == 0:
+            del self.state.seed_inventory[plant_type]
+
         # Plant the seed
         if self.game_engine.plant_seed(self.state, plant_type):
             # Load new plant frames
@@ -372,6 +375,7 @@ class GrowPlotApp:
         self.shop_manager.show_shop(
             self.root, self.state,
             self._handle_shop_buy_pet_food,
+            self._handle_shop_buy_net,
             self._handle_shop_buy_seeds,
             self._handle_shop_buy_pot,
             self._handle_shop_buy_pet,
@@ -383,6 +387,14 @@ class GrowPlotApp:
     def _handle_shop_buy_pet_food(self, quantity: int, cost: int):
         """Handle pet food purchase from shop"""
         success = self.shop_manager.buy_pet_food_transaction(self.state, quantity, cost)
+        if success:
+            self.ui_manager.update_money_display(self.state.money)
+            save_state(self.state)
+        return success
+
+    def _handle_shop_buy_net(self, quantity: int, cost: int):
+        """Handle net purchase from shop"""
+        success = self.shop_manager.buy_net_transaction(self.state, quantity, cost)
         if success:
             self.ui_manager.update_money_display(self.state.money)
             save_state(self.state)
@@ -425,6 +437,12 @@ class GrowPlotApp:
         self.event_handler.create_seed_menu(
             self.root, self.state, self.event_handler.on_plant_seed
         )
+
+    def _handle_bug_click(self, event):
+        """Handle bug click for catching"""
+        success = self.game_engine.catch_bug(self.state)
+        if success:
+            save_state(self.state)
     
     def _place_initial_position(self):
         """Place window at initial position"""

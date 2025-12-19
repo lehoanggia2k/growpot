@@ -106,7 +106,10 @@ class UIManager:
         
         # Drag state
         self._drag_start: tuple[int, int] | None = None
-        
+
+        # Bug display
+        self.bug_item = None  # Canvas item for bug display
+
         # Store callbacks
         self._callbacks: dict[str, Callable] = {}
     
@@ -204,3 +207,44 @@ class UIManager:
         """Delete pet image from canvas"""
         if pet_img_item:
             self.canvas.delete(pet_img_item)
+
+    def show_bug(self, x: int, y: int, click_callback: Callable = None):
+        """Show bug on canvas at specified position"""
+        if self.bug_item is None:
+            # Create bug as red circle
+            self.bug_item = self.canvas.create_oval(
+                x - 8, y - 8, x + 8, y + 8,
+                fill="red",
+                outline="darkred",
+                width=2
+            )
+            # Bind click handler to the new bug item
+            if click_callback:
+                self.canvas.tag_bind(self.bug_item, "<Button-1>", click_callback)
+        else:
+            # Update existing bug position
+            self.canvas.coords(self.bug_item, x - 8, y - 8, x + 8, y + 8)
+            self.canvas.itemconfigure(self.bug_item, state="normal")
+
+    def hide_bug(self):
+        """Hide bug from canvas"""
+        if self.bug_item:
+            self.canvas.itemconfigure(self.bug_item, state="hidden")
+
+    def delete_bug(self):
+        """Delete bug from canvas"""
+        if self.bug_item:
+            self.canvas.delete(self.bug_item)
+            self.bug_item = None
+
+
+
+    def get_bug_position(self) -> tuple[int, int]:
+        """Get current bug position"""
+        if self.bug_item:
+            coords = self.canvas.coords(self.bug_item)
+            if len(coords) >= 4:
+                x = (coords[0] + coords[2]) // 2
+                y = (coords[1] + coords[3]) // 2
+                return int(x), int(y)
+        return 0, 0

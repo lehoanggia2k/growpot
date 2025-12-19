@@ -43,6 +43,11 @@ class GameState:
     pet_food: int = 0  # Amount of pet food owned
     unlocked_pets: set[str] = None
 
+    # Bug system
+    bug_active: bool = False
+    bug_appearance_time: float = 0.0
+    net_quantity: int = 0  # Amount of nets owned
+
     def __post_init__(self):
         if self.inventory is None:
             self.inventory = {}
@@ -97,6 +102,9 @@ def load_state(path: Path = DEFAULT_STATE_FILE) -> GameState:
             pet_last_worked_ts=float(data.get("pet_last_worked_ts", 0.0)),
             pet_food=int(data.get("pet_food", 0)),
             unlocked_pets=set(data.get("unlocked_pets", [])),
+            bug_active=bool(data.get("bug_active", False)),
+            bug_appearance_time=float(data.get("bug_appearance_time", 0.0)),
+            net_quantity=int(data.get("net_quantity", 0)),
         )
     except Exception:
         # If state is corrupt, start fresh.

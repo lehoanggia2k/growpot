@@ -43,6 +43,13 @@ class ShopConfig:
             item_type="pet_food",
             description="Feed your pet to keep it working"
         ),
+        "net": ShopItem(
+            name="Net",
+            price=20,
+            category="pet_food",
+            item_type="net",
+            description="Catch bugs that appear on plants"
+        ),
     })
     # Initial seed stock for each plant type
     initial_seed_stock: dict[str, int] = field(default_factory=lambda: {
@@ -89,6 +96,14 @@ class GameConfig:
 
     # Watering
     water_per_click: float = 5.0  # Fill to 100% per click
+
+    # Bug system
+    bug_appearance_chance: float = 0.34  # 34% chance to appear
+    bug_growth_start: float = 1.8  # Start appearing at 60% growth (1.8/3.0)
+    bug_growth_end: float = 2.4  # Stop appearing at 80% growth (2.4/3.0)
+    bug_catch_time_percent: float = 0.1  # Must catch within 10% of total growth time
+    bug_harvest_bonus_time_percent: float = 0.2  # Harvest within 20% after ripening for bonus
+    bug_sell_price: int = 10  # Price per bug when sold
 
     # Plant stats
     PLANT_STATS: dict[str, PlantStats] = field(default_factory=lambda: {

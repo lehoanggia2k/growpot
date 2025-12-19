@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import math
+import random
 from growpot.state import GameState, now_ts
 from growpot.game_config import GameConfig
 
@@ -41,36 +42,63 @@ class GameEngine:
         
         water_factor = 1.0 - math.exp(-state.water)
         growth_rate = effective_growth_rate + water_factor * self.cfg.water_boost_growth_per_sec
+        prev_growth = state.growth
         state.growth += growth_rate * dt
+
+        # Check for bug generation (only if no bug is currently active)
+        if not state.bug_active and prev_growth < self.cfg.bug_growth_end and state.growth >= self.cfg.bug_growth_start:
+            # Check if growth crossed into bug spawn range
+            growth_in_range = min(state.growth, self.cfg.bug_growth_end) - max(prev_growth, self.cfg.bug_growth_start)
+            if growth_in_range > 0:
+                # Calculate spawn probability based on growth traversed in spawn range
+                spawn_chance = self.cfg.bug_appearance_chance * (growth_in_range / (self.cfg.bug_growth_end - self.cfg.bug_growth_start))
+                if random.random() < spawn_chance:
+                    state.bug_active = True
+                    state.bug_appearance_time = now_ts()
     
     def can_harvest(self, state: GameState) -> bool:
         """Check if plant is ready for harvest"""
         return state.growth >= self.cfg.plant_at
     
-    def harvest_plant(self, state: GameState) -> int:
-        """Harvest the plant and return the yield amount"""
+    def harvest_plant(self, state: GameState) -> tuple[int, str]:
+        """Harvest the plant and return the yield amount and quality"""
         if state.growth < self.cfg.plant_at:
-            return 0  # Not ready to harvest
-        
-        # Calculate yield reduction based on water deficit
+            return 0, "normal"  # Not ready to harvest
+
+        # Calculate base yield
         plant_stats = self.cfg.PLANT_STATS[state.plant_type]
         base_yield = plant_stats.yield_amount
-        
-        # Total possible deficit over full growth time (rough estimate)
-        full_growth_time = plant_stats.growth_time_sec
-        max_deficit = 0.5 * full_growth_time  # Assuming threshold 0.5
-        
-        # Yield reduction: up to 50% reduction if deficit >= max_deficit
-        deficit_ratio = min(1.0, state.growth_water_deficit / max_deficit)
-        yield_reduction = 0.5 * deficit_ratio  # Max 50% reduction
-        effective_yield = max(1, int(base_yield * (1.0 - yield_reduction)))
-        
+
+        # Determine quality based on water and harvest timing
+        quality = self._calculate_harvest_quality(state, plant_stats)
+
+        # Apply quality modifiers
+        if quality == "poor":
+            # Poor quality: yield reduction based on water deficit
+            full_growth_time = plant_stats.growth_time_sec
+            max_deficit = 0.5 * full_growth_time
+            deficit_ratio = min(1.0, state.growth_water_deficit / max_deficit)
+            yield_reduction = 0.5 * deficit_ratio  # Max 50% reduction
+            effective_yield = max(1, int(base_yield * (1.0 - yield_reduction)))
+        elif quality == "normal":
+            # Normal quality: standard yield
+            effective_yield = base_yield
+        elif quality == "excellent":
+            # Excellent quality: 25% bonus
+            effective_yield = int(base_yield * 1.25)
+
+        # Handle bug penalty: reduce quality by 1 level if bug wasn't caught
+        if state.bug_active:
+            quality = self._apply_bug_penalty(quality)
+            state.bug_active = False  # Bug is gone after harvest
+            state.bug_appearance_time = 0.0
+
         # Harvest: make pot empty, add to inventory
         state.growth = -1.0  # Empty pot
         state.growth_water_deficit = 0.0  # Reset deficit
         state.last_harvest_ts = now_ts()
-        
-        return effective_yield
+
+        return effective_yield, quality
     
     def water_plant(self, state: GameState):
         """Add water to the plant"""
@@ -81,6 +109,9 @@ class GameEngine:
         state.growth = 0.0
         state.water = 0.0
         state.growth_water_deficit = 0.0
+        # Reset bug state
+        state.bug_active = False
+        state.bug_appearance_time = 0.0
     
     def can_plant_seed(self, state: GameState) -> bool:
         """Check if a seed can be planted"""
@@ -164,3 +195,53 @@ class GameEngine:
         state.money -= cost
         state.unlocked_pots.add(pot_type)
         return True
+
+    def _calculate_harvest_quality(self, state: GameState, plant_stats) -> str:
+        """Calculate harvest quality based on water and timing"""
+        # Check water sufficiency (no deficit = sufficient water)
+        water_sufficient = state.growth_water_deficit <= 0.01  # Very small threshold
+
+        # Check harvest timing for excellent quality
+        # Excellent: harvest within 20% growth time after ripening
+        time_since_ripening = now_ts() - state.last_harvest_ts if state.last_harvest_ts > 0 else 0
+        max_bonus_time = plant_stats.growth_time_sec * self.cfg.bug_harvest_bonus_time_percent
+        timely_harvest = time_since_ripening <= max_bonus_time
+
+        if water_sufficient and timely_harvest:
+            return "excellent"
+        elif water_sufficient:
+            return "normal"
+        else:
+            return "poor"
+
+    def _apply_bug_penalty(self, quality: str) -> str:
+        """Apply bug penalty by reducing quality by one level"""
+        if quality == "excellent":
+            return "normal"
+        elif quality == "normal":
+            return "poor"
+        else:
+            return "poor"  # Already poor, stays poor
+
+    def catch_bug(self, state: GameState) -> bool:
+        """Attempt to catch the active bug"""
+        if not state.bug_active or state.net_quantity <= 0:
+            return False
+
+        # Consume one net
+        state.net_quantity -= 1
+
+        # Add bug to inventory
+        if "bug" not in state.inventory:
+            state.inventory["bug"] = 0
+        state.inventory["bug"] += 1
+
+        # Remove bug
+        state.bug_active = False
+        state.bug_appearance_time = 0.0
+
+        return True
+
+    def can_catch_bug(self, state: GameState) -> bool:
+        """Check if bug can be caught"""
+        return state.bug_active and state.net_quantity > 0
