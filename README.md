@@ -20,10 +20,17 @@ Một trò chơi trồng cây mini chạy trên desktop Windows với các tính
 - **Kích hoạt/Tắt**: Có thể bật/tắt vật nuôi bất kỳ lúc nào
 
 ### 💰 Hệ Thống Kinh Tế
-- **Kiếm tiền**: Bán sản phẩm thu hoạch được
-- **Cửa hàng**: Mua hạt giống, chậu, vật nuôi, và thức ăn
+- **Kiếm tiền**: Bán sản phẩm thu hoạch được và bắt côn trùng
+- **Cửa hàng**: Mua hạt giống, chậu, vật nuôi, thức ăn và lưới bắt côn trùng
 - **Kho**: Lưu trữ sản phẩm thu hoạch, bán hàng loạt
 - **Hiển thị tiền**: Xem số dư hiện tại trên giao diện
+
+### 🐛 Hệ Thống Côn Trùng
+- **Xuất hiện ngẫu nhiên**: Côn trùng xuất hiện trên cây khi đang phát triển (60-80% tiến trình)
+- **Bắt côn trùng**: Sử dụng lưới để bắt côn trùng (mua tại cửa hàng, giá 💰20/lưới)
+- **Phạt nếu bỏ sót**: Côn trùng không bắt sẽ làm giảm chất lượng thu hoạch
+- **Bán côn trùng**: Bán côn trùng đã bắt được (💰10/con)
+- **Thời gian bắt**: Phải bắt trong thời gian ngắn sau khi xuất hiện
 
 ### 🎮 Giao Diện & UX
 - **Luôn ở trên cùng**: Cửa sổ luôn hiển thị trên desktop
@@ -103,14 +110,17 @@ assets/sounds/
 1. **Khởi động game**: Chạy `python main.py`
 2. **Trồng cây**: Click menu hạt giống để chọn loại cây
 3. **Tưới nước**: Click vào chậu để tưới nước
-4. **Thu hoạch**: Click thu hoạch khi cây trưởng thành
-5. **Mở rộng**: Mua chậu mới, vật nuôi từ cửa hàng
-6. **Kiếm tiền**: Bán sản phẩm thu hoạch tại kho
+4. **Bắt côn trùng**: Click vào côn trùng khi xuất hiện trên cây (cần mua lưới trước)
+5. **Thu hoạch**: Click thu hoạch khi cây trưởng thành
+6. **Mở rộng**: Mua chậu mới, vật nuôi, lưới bắt côn trùng từ cửa hàng
+7. **Kiếm tiền**: Bán sản phẩm thu hoạch và côn trùng tại kho
 
 ### Mẹo Chơi
 - Vật nuôi giúp tự động tưới nước khi bạn bận rộn
 - Chậu gỗ giúp tiết kiệm thời gian và nước
-- Bán sản phẩm đúng lúc để có tiền mua upgrade
+- Bắt côn trùng kịp thời để tránh giảm chất lượng thu hoạch
+- Bán côn trùng để kiếm thêm tiền phụ
+- Chuẩn bị lưới trước khi trồng cây để có thể bắt côn trùng
 - Game lưu tiến trình tự động vào `state.json`
 
 ## 🔧 Phát Triển & Build
