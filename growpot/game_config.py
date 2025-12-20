@@ -34,6 +34,17 @@ class ShopItem:
 
 
 @dataclass(frozen=True)
+class QuestTemplate:
+    id: str  # Unique identifier
+    name: str  # Display name
+    description: str  # Quest description
+    requirement_type: str  # Type of requirement (e.g., "harvest")
+    plant_type: str  # Specific plant type required (for harvest quests)
+    requirement_count: int  # How many to complete
+    reward_money: int  # Money reward
+
+
+@dataclass(frozen=True)
 class ShopConfig:
     items: dict[str, ShopItem] = field(default_factory=lambda: {
         "pet_food": ShopItem(
@@ -122,3 +133,92 @@ class GameConfig:
     PET_STATS: dict[str, PetStats] = field(default_factory=lambda: {
         "cat": PetStats(unlock_cost=200, work_duration_sec=7200.0, auto_water_threshold=0.1, auto_water_amount=3.0),  # 2 hours work, auto-water at 10%, adds 3.0 water
     })
+
+    # Daily quest templates (base templates that will be modified with specific plant types)
+    QUEST_TEMPLATES: dict[str, QuestTemplate] = field(default_factory=lambda: {
+        "harvest_bronze_basic": QuestTemplate(
+            id="harvest_bronze_basic",
+            name="Thu hoạch cơ bản",
+            description="Thu hoạch 4 cây basic",
+            requirement_type="harvest",
+            plant_type="basic",
+            requirement_count=4,
+            reward_money=50
+        ),
+        "harvest_bronze_rose": QuestTemplate(
+            id="harvest_bronze_rose",
+            name="Thu hoạch cơ bản",
+            description="Thu hoạch 2 cây rose",
+            requirement_type="harvest",
+            plant_type="rose",
+            requirement_count=2,
+            reward_money=50
+        ),
+        "harvest_bronze_daisy": QuestTemplate(
+            id="harvest_bronze_daisy",
+            name="Thu hoạch cơ bản",
+            description="Thu hoạch 1 cây daisy",
+            requirement_type="harvest",
+            plant_type="daisy",
+            requirement_count=1,
+            reward_money=50
+        ),
+        "harvest_silver_basic": QuestTemplate(
+            id="harvest_silver_basic",
+            name="Thu hoạch nâng cao",
+            description="Thu hoạch 6 cây basic",
+            requirement_type="harvest",
+            plant_type="basic",
+            requirement_count=6,
+            reward_money=75
+        ),
+        "harvest_silver_rose": QuestTemplate(
+            id="harvest_silver_rose",
+            name="Thu hoạch nâng cao",
+            description="Thu hoạch 3 cây rose",
+            requirement_type="harvest",
+            plant_type="rose",
+            requirement_count=3,
+            reward_money=75
+        ),
+        "harvest_silver_daisy": QuestTemplate(
+            id="harvest_silver_daisy",
+            name="Thu hoạch nâng cao",
+            description="Thu hoạch 2 cây daisy",
+            requirement_type="harvest",
+            plant_type="daisy",
+            requirement_count=2,
+            reward_money=75
+        ),
+        "harvest_gold_basic": QuestTemplate(
+            id="harvest_gold_basic",
+            name="Thu hoạch chuyên nghiệp",
+            description="Thu hoạch 8 cây basic",
+            requirement_type="harvest",
+            plant_type="basic",
+            requirement_count=8,
+            reward_money=100
+        ),
+        "harvest_gold_rose": QuestTemplate(
+            id="harvest_gold_rose",
+            name="Thu hoạch chuyên nghiệp",
+            description="Thu hoạch 4 cây rose",
+            requirement_type="harvest",
+            plant_type="rose",
+            requirement_count=4,
+            reward_money=100
+        ),
+        "harvest_gold_daisy": QuestTemplate(
+            id="harvest_gold_daisy",
+            name="Thu hoạch chuyên nghiệp",
+            description="Thu hoạch 3 cây daisy",
+            requirement_type="harvest",
+            plant_type="daisy",
+            requirement_count=3,
+            reward_money=100
+        ),
+    })
+
+    # Daily quest settings
+    daily_quest_count_min: int = 2  # Minimum quests per day
+    daily_quest_count_max: int = 3  # Maximum quests per day

@@ -113,15 +113,15 @@ class UIManager:
         # Store callbacks
         self._callbacks: dict[str, Callable] = {}
     
-    def setup_settings_menu(self, state: GameState, water_callback: Callable, harvest_callback: Callable, 
+    def setup_settings_menu(self, state: GameState, water_callback: Callable, harvest_callback: Callable,
                            seed_menu_callback: Callable, reset_callback: Callable, warehouse_callback: Callable,
-                           pet_status_callback: Callable, shop_callback: Callable, pot_menu: Menu,
-                           close_callback: Callable):
+                           pet_status_callback: Callable, shop_callback: Callable, quests_callback: Callable,
+                           pot_menu: Menu, close_callback: Callable):
         """Setup the settings menu with all callbacks"""
-        
+
         # Clear existing menu items
         self.settings_menu.delete(0, "end")
-        
+
         # Add menu items
         self.settings_menu.add_command(label=self.ui.menu_water, command=water_callback)
         self.settings_menu.add_command(label=self.ui.menu_harvest, command=harvest_callback, state="disabled")
@@ -130,11 +130,12 @@ class UIManager:
         self.settings_menu.add_command(label=self.ui.menu_warehouse, command=warehouse_callback)
         self.settings_menu.add_command(label=self.ui.menu_pet, command=pet_status_callback)
         self.settings_menu.add_command(label=self.ui.menu_shop, command=shop_callback)
+        self.settings_menu.add_command(label=self.ui.menu_quests, command=quests_callback)
         self.settings_menu.add_separator()
         self.settings_menu.add_cascade(label=self.ui.menu_change_pot, menu=pot_menu)
         self.settings_menu.add_separator()
         self.settings_menu.add_command(label=self.ui.menu_quit, command=close_callback)
-        
+
         # Store harvest callback for enabling/disabling
         self._callbacks['harvest'] = harvest_callback
     
@@ -248,3 +249,164 @@ class UIManager:
                 y = (coords[1] + coords[3]) // 2
                 return int(x), int(y)
         return 0, 0
+
+    def show_quests(self, quests: list[dict], claim_callback: Callable, close_callback: Callable):
+        """Show daily quests window"""
+        # Create quest window
+        quest_window = tk.Toplevel(self.root)
+        quest_window.title(self.ui.quest_title)
+        quest_window.geometry("400x500")
+        quest_window.resizable(True, True)
+        quest_window.attributes("-topmost", True)
+
+        # Title
+        title_label = tk.Label(
+            quest_window,
+            text=self.ui.quest_title,
+            font=("Segoe UI", 16, "bold"),
+            pady=10
+        )
+        title_label.pack()
+
+        # Quest list frame
+        quest_frame = tk.Frame(quest_window)
+        quest_frame.pack(fill="both", expand=True, padx=20, pady=(0, 20))
+
+        if not quests:
+            # No quests message
+            no_quests_label = tk.Label(
+                quest_frame,
+                text=self.ui.quest_no_quests,
+                font=("Segoe UI", 12),
+                justify="center"
+            )
+            no_quests_label.pack(expand=True)
+        else:
+            # Create scrollable frame for quests
+            canvas = tk.Canvas(quest_frame, height=300)
+            scrollbar = tk.Scrollbar(quest_frame, orient="vertical", command=canvas.yview)
+            scrollable_frame = tk.Frame(canvas)
+
+            scrollable_frame.bind(
+                "<Configure>",
+                lambda e: canvas.configure(scrollregion=canvas.bbox("all"))
+            )
+
+            canvas.create_window((0, 0), window=scrollable_frame, anchor="nw")
+            canvas.configure(yscrollcommand=scrollbar.set)
+
+            canvas.pack(side="left", fill="both", expand=True)
+            scrollbar.pack(side="right", fill="y")
+
+            # Display each quest
+            for quest in quests:
+                self._create_quest_item(scrollable_frame, quest, claim_callback)
+
+        # Close button
+        close_button = tk.Button(
+            quest_window,
+            text=self.ui.quest_close_button,
+            command=lambda: [quest_window.destroy(), close_callback()],
+            font=("Segoe UI", 12),
+            width=10
+        )
+        close_button.pack(pady=(0, 20))
+
+    def _create_quest_item(self, parent: tk.Frame, quest: dict, claim_callback: Callable):
+        """Create a quest item widget"""
+        # Quest frame
+        quest_frame = tk.Frame(parent, relief="solid", borderwidth=1, padx=10, pady=10)
+        quest_frame.pack(fill="x", pady=(0, 10))
+
+        # Quest name
+        name_label = tk.Label(
+            quest_frame,
+            text=quest["name"],
+            font=("Segoe UI", 12, "bold"),
+            anchor="w"
+        )
+        name_label.pack(fill="x")
+
+        # Quest description
+        desc_label = tk.Label(
+            quest_frame,
+            text=quest["description"],
+            font=("Segoe UI", 10),
+            anchor="w",
+            fg="gray"
+        )
+        desc_label.pack(fill="x")
+
+        # Progress
+        progress_text = self.ui.quest_progress_label.format(
+            quest["current_progress"], quest["requirement_count"]
+        )
+        progress_label = tk.Label(
+            quest_frame,
+            text=progress_text,
+            font=("Segoe UI", 10),
+            anchor="w"
+        )
+        progress_label.pack(fill="x")
+
+        # Progress bar
+        progress_bar = ttk.Progressbar(
+            quest_frame,
+            orient="horizontal",
+            length=200,
+            mode="determinate",
+            maximum=quest["requirement_count"],
+            value=quest["current_progress"]
+        )
+        progress_bar.pack(fill="x", pady=(5, 5))
+
+        # Reward
+        reward_text = self.ui.quest_reward_label.format(quest["reward_money"])
+        reward_label = tk.Label(
+            quest_frame,
+            text=reward_text,
+            font=("Segoe UI", 10, "bold"),
+            anchor="w",
+            fg="green"
+        )
+        reward_label.pack(fill="x")
+
+        # Status and claim button
+        bottom_frame = tk.Frame(quest_frame)
+        bottom_frame.pack(fill="x", pady=(5, 0))
+
+        if quest["completed"] and not quest.get("claimed", False):
+            # Completed, show claim button
+            claim_button = tk.Button(
+                bottom_frame,
+                text=self.ui.quest_claim_button,
+                command=lambda q=quest: [claim_callback(q["id"]), self._refresh_quests(parent)],
+                font=("Segoe UI", 10),
+                bg="green",
+                fg="white"
+            )
+            claim_button.pack(side="right")
+        elif quest.get("claimed", False):
+            # Already claimed
+            claimed_label = tk.Label(
+                bottom_frame,
+                text="Đã nhận",
+                font=("Segoe UI", 10, "bold"),
+                fg="green"
+            )
+            claimed_label.pack(side="right")
+        elif quest["completed"]:
+            # Completed but not claimed
+            status_label = tk.Label(
+                bottom_frame,
+                text=self.ui.quest_completed_label,
+                font=("Segoe UI", 10, "bold"),
+                fg="green"
+            )
+            status_label.pack(side="right")
+
+    def _refresh_quests(self, parent: tk.Frame):
+        """Refresh the quests display after claiming"""
+        # This would need to be implemented to refresh the quest list
+        # For now, we'll just close and reopen, but ideally we'd update in place
+        pass

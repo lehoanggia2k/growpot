@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import math
 import random
+import time
 from growpot.state import GameState, now_ts
 from growpot.game_config import GameConfig
 
@@ -92,6 +93,9 @@ class GameEngine:
         state.growth_water_deficit = 0.0  # Reset deficit
         state.water_ever_depleted = False  # Reset depletion flag
         state.last_harvest_ts = now_ts()
+
+        # Update quest progress for harvesting specific plant type
+        self.update_quest_progress(state, "harvest", 1, state.plant_type)
 
         return effective_yield, quality
     
@@ -242,3 +246,89 @@ class GameEngine:
     def can_catch_bug(self, state: GameState) -> bool:
         """Check if bug can be caught"""
         return state.bug_active and state.net_quantity > 0
+
+    def check_daily_quest_reset(self, state: GameState):
+        """Check if daily quests need to be reset (midnight)"""
+        now = now_ts()
+        last_reset = state.quest_last_reset_ts
+
+        # Check if it's a new day (past midnight)
+        now_struct = time.localtime(now)
+        last_struct = time.localtime(last_reset) if last_reset > 0 else None
+
+        needs_reset = (
+            last_reset == 0.0 or  # Never reset before
+            now_struct.tm_mday != last_struct.tm_mday or  # Different day
+            now_struct.tm_mon != last_struct.tm_mon or    # Different month
+            now_struct.tm_year != last_struct.tm_year     # Different year
+        )
+
+        if needs_reset:
+            self.generate_daily_quests(state)
+            state.quest_last_reset_ts = now
+            state.completed_quests_today = 0
+
+    def generate_daily_quests(self, state: GameState):
+        """Generate new daily quests for the player"""
+        # Clear existing quests
+        state.daily_quests = []
+
+        # Determine how many quests to generate
+        quest_count = random.randint(self.cfg.daily_quest_count_min, self.cfg.daily_quest_count_max)
+
+        # Get all available quest templates
+        available_templates = list(self.cfg.QUEST_TEMPLATES.values())
+
+        # Randomly select quests (ensure no duplicates)
+        selected_templates = random.sample(available_templates, min(quest_count, len(available_templates)))
+
+        # Create quest instances
+        for template in selected_templates:
+            quest = {
+                "id": template.id,
+                "name": template.name,
+                "description": template.description,
+                "requirement_type": template.requirement_type,
+                "plant_type": template.plant_type,
+                "requirement_count": template.requirement_count,
+                "current_progress": 0,
+                "reward_money": template.reward_money,
+                "completed": False
+            }
+            state.daily_quests.append(quest)
+
+    def update_quest_progress(self, state: GameState, action_type: str, amount: int = 1, plant_type: str = None):
+        """Update quest progress based on player actions"""
+        for quest in state.daily_quests:
+            if quest["completed"]:
+                continue
+
+            # Check if this quest matches the action
+            matches = quest["requirement_type"] == action_type
+
+            # For harvest quests, also check plant type
+            if action_type == "harvest" and "plant_type" in quest:
+                matches = matches and quest["plant_type"] == plant_type
+
+            if matches:
+                quest["current_progress"] = min(quest["requirement_count"],
+                                              quest["current_progress"] + amount)
+
+                # Check if quest is completed
+                if quest["current_progress"] >= quest["requirement_count"] and not quest["completed"]:
+                    quest["completed"] = True
+                    state.completed_quests_today += 1
+
+    def complete_quest(self, state: GameState, quest_id: str) -> bool:
+        """Complete a quest and give rewards"""
+        for quest in state.daily_quests:
+            if quest["id"] == quest_id and quest["completed"] and not quest.get("claimed", False):
+                # Give reward
+                state.money += quest["reward_money"]
+                quest["claimed"] = True
+                return True
+        return False
+
+    def get_active_quests(self, state: GameState) -> list[dict]:
+        """Get list of active (unclaimed) quests"""
+        return [quest for quest in state.daily_quests if not quest.get("claimed", False)]

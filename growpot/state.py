@@ -50,6 +50,11 @@ class GameState:
     bug_appearance_time: float = 0.0
     net_quantity: int = 0  # Amount of nets owned
 
+    # Daily quest system
+    daily_quests: list[dict] = None  # List of active daily quests
+    quest_last_reset_ts: float = 0.0  # Last time quests were reset
+    completed_quests_today: int = 0  # Number of quests completed today
+
     def __post_init__(self):
         if self.inventory is None:
             self.inventory = {}
@@ -59,6 +64,8 @@ class GameState:
             self.unlocked_pots = {"default"}  # Basic pot is unlocked by default
         if self.unlocked_pets is None:
             self.unlocked_pets = set()  # No pets unlocked by default
+        if self.daily_quests is None:
+            self.daily_quests = []  # No quests by default
 
 
 DEFAULT_STATE_FILE = Path("state.json")
@@ -108,6 +115,9 @@ def load_state(path: Path = DEFAULT_STATE_FILE) -> GameState:
             bug_active=bool(data.get("bug_active", False)),
             bug_appearance_time=float(data.get("bug_appearance_time", 0.0)),
             net_quantity=int(data.get("net_quantity", 0)),
+            daily_quests=data.get("daily_quests", []),
+            quest_last_reset_ts=float(data.get("quest_last_reset_ts", 0.0)),
+            completed_quests_today=int(data.get("completed_quests_today", 0)),
         )
     except Exception:
         # If state is corrupt, start fresh.

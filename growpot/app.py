@@ -52,6 +52,9 @@ class GrowPlotApp:
         # Apply offline progress and initialize shop inventory
         self.game_engine.apply_offline_progress(self.state)
         self._initialize_shop_inventory()
+
+        # Check for daily quest reset
+        self.game_engine.check_daily_quest_reset(self.state)
         
         # Start game loop
         self._last_tick_perf = time.perf_counter()
@@ -113,6 +116,7 @@ class GrowPlotApp:
         self.event_handler.register_callback('show_warehouse', self._handle_show_warehouse)
         self.event_handler.register_callback('show_pet_status', self._handle_show_pet_status)
         self.event_handler.register_callback('show_shop', self._handle_show_shop)
+        self.event_handler.register_callback('show_quests', self._handle_show_quests)
         self.event_handler.register_callback('show_seed_menu', self._handle_show_seed_menu)
         
         # Setup drag handlers
@@ -142,6 +146,7 @@ class GrowPlotApp:
             self.event_handler.on_show_warehouse,
             self.event_handler.on_show_pet_status,
             self.event_handler.on_show_shop,
+            self.event_handler.on_show_quests,
             pot_menu,
             self.event_handler.on_close
         )
@@ -431,6 +436,27 @@ class GrowPlotApp:
     def _handle_shop_activate_pet(self, pet_type: str):
         """Handle pet activation from shop"""
         return self._handle_pet_activate(pet_type)
+
+    def _handle_show_quests(self):
+        """Handle quests display"""
+        active_quests = self.game_engine.get_active_quests(self.state)
+        self.ui_manager.show_quests(
+            active_quests,
+            self._handle_claim_quest,
+            self._handle_close_quests
+        )
+
+    def _handle_claim_quest(self, quest_id: str):
+        """Handle quest reward claiming"""
+        success = self.game_engine.complete_quest(self.state, quest_id)
+        if success:
+            self.ui_manager.update_money_display(self.state.money)
+            save_state(self.state)
+
+    def _handle_close_quests(self):
+        """Handle quests window closing"""
+        # Refresh settings menu to update any changes
+        self._handle_show_settings_menu()
     
     def _handle_show_seed_menu(self):
         """Handle seed menu display"""

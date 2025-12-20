@@ -99,6 +99,11 @@ class EventHandler:
         """Handle shop menu click"""
         if 'show_shop' in self._callbacks:
             self._callbacks['show_shop']()
+
+    def on_show_quests(self):
+        """Handle quests menu click"""
+        if 'show_quests' in self._callbacks:
+            self._callbacks['show_quests']()
     
     def on_show_seed_menu(self):
         """Handle seed menu click"""

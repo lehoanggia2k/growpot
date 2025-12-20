@@ -1,39 +1,70 @@
 {
   "growth": -1.0,
-  "water": 3.461624400001021,
+  "water": 0.0,
   "growth_water_deficit": 0.0,
   "water_ever_depleted": false,
-  "x": 1617,
-  "y": 849,
-  "last_update_ts": 1766198732.1066806,
+  "x": 1694,
+  "y": 479,
+  "last_update_ts": 1766205503.9681013,
   "pot_type": "default",
-  "plant_type": "daisy",
-  "harvested_count": 55,
-  "last_harvest_ts": 1766144538.3037343,
-  "money": 2110,
-  "inventory": {
-    "basic": 31,
-    "daisy": 22,
-    "rose": 2,
-    "bug": 3
-  },
+  "plant_type": "basic",
+  "harvested_count": 20,
+  "last_harvest_ts": 1766205477.801405,
+  "money": 255,
+  "inventory": {},
   "seed_inventory": {
-    "basic": 5,
-    "rose": 2,
-    "daisy": 1
+    "basic": 4,
+    "rose": 5
   },
   "unlocked_pots": [
-    "default",
-    "wood"
+    "default"
   ],
-  "active_pet": "cat",
-  "pet_last_fed_ts": 1766142275.5591307,
-  "pet_last_worked_ts": 1766144538.0457304,
-  "pet_food": 8,
-  "unlocked_pets": [
-    "cat"
-  ],
+  "active_pet": null,
+  "pet_last_fed_ts": 0.0,
+  "pet_last_worked_ts": 0.0,
+  "pet_food": 5,
+  "unlocked_pets": [],
   "bug_active": false,
   "bug_appearance_time": 0.0,
-  "net_quantity": 12
+  "net_quantity": 10,
+  "daily_quests": [
+    {
+      "id": "harvest_bronze_daisy",
+      "name": "Thu ho\u1ea1ch c\u01a1 b\u1ea3n",
+      "description": "Thu ho\u1ea1ch 1 c\u00e2y daisy",
+      "requirement_type": "harvest",
+      "plant_type": "daisy",
+      "requirement_count": 1,
+      "current_progress": 1,
+      "reward_money": 50,
+      "completed": true,
+      "claimed": true
+    },
+    {
+      "id": "harvest_gold_daisy",
+      "name": "Thu ho\u1ea1ch chuy\u00ean nghi\u1ec7p",
+      "description": "Thu ho\u1ea1ch 3 c\u00e2y daisy",
+      "requirement_type": "harvest",
+      "plant_type": "daisy",
+      "requirement_count": 3,
+      "current_progress": 3,
+      "reward_money": 100,
+      "completed": true,
+      "claimed": true
+    },
+    {
+      "id": "harvest_silver_basic",
+      "name": "Thu ho\u1ea1ch n\u00e2ng cao",
+      "description": "Thu ho\u1ea1ch 6 c\u00e2y basic",
+      "requirement_type": "harvest",
+      "plant_type": "basic",
+      "requirement_count": 6,
+      "current_progress": 6,
+      "reward_money": 75,
+      "completed": true,
+      "claimed": true
+    }
+  ],
+  "quest_last_reset_ts": 1766204759.7339191,
+  "completed_quests_today": 3
 }

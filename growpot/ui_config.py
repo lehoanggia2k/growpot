@@ -54,6 +54,16 @@ class UIConfig:
     shop_buy_button: str = "Mua"
     shop_not_enough_money: str = "Không đủ tiền!"
     shop_purchase_success: str = "Mua hàng thành công!"
+
+    # Daily quest system
+    menu_quests: str = "Nhiệm vụ"
+    quest_title: str = "📋 Nhiệm vụ hàng ngày"
+    quest_close_button: str = "Đóng"
+    quest_claim_button: str = "Nhận thưởng"
+    quest_progress_label: str = "Tiến độ: {}/{}"
+    quest_reward_label: str = "Phần thưởng: 💰{}"
+    quest_completed_label: str = "Hoàn thành"
+    quest_no_quests: str = "Không có nhiệm vụ nào hôm nay.\nHãy quay lại vào ngày mai!"
     
     # Shop tabs
     shop_tab_pet_food: str = "Thức ăn"
