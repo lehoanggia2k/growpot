@@ -35,9 +35,9 @@ class UIConfig:
     # Progress bar styles
     water_progress_style: str = "Water.Horizontal.TProgressbar"
 
-    # Pet system
-    menu_pet: str = "Pet"
-    pet_status_title: str = "🐾 Pet Status"
+    # Status system
+    menu_pet: str = "Status"
+    pet_status_title: str = "Status"
     pet_active_label: str = "Active Pet: {}"
     pet_no_active: str = "No active pet"
     pet_time_until_hungry: str = "Time until hungry: {}"

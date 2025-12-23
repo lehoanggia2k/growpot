@@ -210,9 +210,6 @@ class GrowPlotApp:
                 self.animation_manager.pet_img_item, pet_image, pet_x, pet_y
             )
         
-        # Update progress bars
-        self.ui_manager.update_progress_bars(self.state.growth, self.state.water, self.cfg.plant_at)
-
         # Update bug display
         if self.state.bug_active:
             # Show bug above the pot
@@ -335,13 +332,18 @@ class GrowPlotApp:
         return success
     
     def _handle_show_pet_status(self):
-        """Handle pet status display"""
+        """Handle status display"""
+        # Callback to get current state values for live updates
+        def get_current_state():
+            return self.state.growth, self.state.water, self.cfg.plant_at
+
         self.pet_manager.show_pet_status(
-            self.root, self.state,
+            self.root, self.state, self.state.growth, self.state.water, self.cfg.plant_at,
             self._handle_pet_feed,
             self._handle_pet_activate,
             self._handle_pet_deactivate,
-            self._handle_pet_unlock
+            self._handle_pet_unlock,
+            get_current_state
         )
     
     def _handle_pet_feed(self):

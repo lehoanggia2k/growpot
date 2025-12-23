@@ -14,23 +14,81 @@ class PetManager:
         self.cfg = config
         self.ui = ui_config
     
-    def show_pet_status(self, root: tk.Tk, state: GameState,
+    def show_pet_status(self, root: tk.Tk, state: GameState, growth: float, water: float, plant_at: float,
                        feed_callback: callable, activate_callback: callable,
-                       deactivate_callback: callable, unlock_callback: callable):
-        """Create and show the pet status dialog"""
-        # Create pet status dialog
+                       deactivate_callback: callable, unlock_callback: callable,
+                       state_callback: callable = None):
+        """Create and show the status dialog"""
+        # Create status dialog
         pet_win = Toplevel(root)
         pet_win.title(self.ui.pet_status_title)
         pet_win.geometry(f"{self.ui.default_popup_width}x{self.ui.default_popup_height}")
         pet_win.resizable(self.ui.default_popup_resizable, self.ui.default_popup_resizable)
-        
+
         # Main frame
         main_frame = tk.Frame(pet_win, padx=20, pady=20)
         main_frame.pack(fill="both", expand=True)
-        
+
         # Title
         title_label = tk.Label(main_frame, text=self.ui.pet_status_title, font=("Segoe UI", 14, "bold"))
         title_label.pack(pady=(0, 20))
+
+        # Plant status section
+        plant_frame = tk.Frame(main_frame)
+        plant_frame.pack(fill="x", pady=(0, 20))
+
+        # Growth progress
+        growth_label = tk.Label(plant_frame, text="Growth Progress:", font=("Segoe UI", 11, "bold"))
+        growth_label.pack(anchor="w")
+
+        import tkinter.ttk as ttk
+        growth_progress = ttk.Progressbar(
+            plant_frame,
+            orient="horizontal",
+            length=400,
+            mode="determinate",
+            maximum=100,
+            value=min(100.0, (growth / plant_at) * 100.0) if growth >= 0 else 0.0
+        )
+        growth_progress.pack(fill="x", pady=(5, 10))
+
+        # Water progress
+        water_label = tk.Label(plant_frame, text="Water Level:", font=("Segoe UI", 11, "bold"))
+        water_label.pack(anchor="w")
+
+        water_progress = ttk.Progressbar(
+            plant_frame,
+            orient="horizontal",
+            length=400,
+            mode="determinate",
+            maximum=100,
+            value=min(100.0, (water / 5.0) * 100.0)
+        )
+        water_progress.pack(fill="x", pady=(5, 0))
+
+        # Store progress bar references for live updates
+        progress_bars = {
+            'growth': growth_progress,
+            'water': water_progress,
+            'plant_at': plant_at
+        }
+
+        # Live update function
+        def update_progress_bars():
+            if state_callback and pet_win.winfo_exists():
+                current_growth, current_water, current_plant_at = state_callback()
+                # Update growth progress
+                growth_percent = min(100.0, (current_growth / current_plant_at) * 100.0) if current_growth >= 0 else 0.0
+                growth_progress.config(value=growth_percent)
+                # Update water progress
+                water_percent = min(100.0, (current_water / 5.0) * 100.0)
+                water_progress.config(value=water_percent)
+                # Schedule next update
+                pet_win.after(200, update_progress_bars)  # Update every 200ms
+
+        # Start live updates if callback provided
+        if state_callback:
+            pet_win.after(200, update_progress_bars)
         
         # Pet status frame
         status_frame = tk.Frame(main_frame)

@@ -44,34 +44,6 @@ class UIManager:
             anchor="center"
         )
         
-        # Setup progress bars frame (hidden by default)
-        self.progress_frame = tk.Frame(self.container, bg="magenta")
-        self.progress_frame.pack_forget()
-        
-        # Harvest progress bar
-        self.harvest_progress = ttk.Progressbar(
-            self.progress_frame,
-            orient="horizontal",
-            length=160,
-            mode="determinate",
-            maximum=100,
-            value=0,
-            style="TProgressbar"
-        )
-        self.harvest_progress.pack(side="top", pady=(2, 1))
-        
-        # Water progress bar
-        self.water_progress = ttk.Progressbar(
-            self.progress_frame,
-            orient="horizontal",
-            length=160,
-            mode="determinate",
-            maximum=100,
-            value=0,
-            style="Water.Horizontal.TProgressbar"
-        )
-        self.water_progress.pack(side="top", pady=(1, 2))
-        
         # Setup controls frame
         self.controls = tk.Frame(self.container, bg="magenta")
         self.controls.pack(side="bottom", fill="x")
@@ -99,11 +71,7 @@ class UIManager:
         
         # Setup settings menu
         self.settings_menu = Menu(self.root, tearoff=0)
-        
-        # Bind hover events
-        self.canvas.bind("<Enter>", self._show_progress_bars)
-        self.canvas.bind("<Leave>", self._hide_progress_bars)
-        
+
         # Drag state
         self._drag_start: tuple[int, int] | None = None
 
@@ -152,17 +120,6 @@ class UIManager:
         except tk.TclError:
             pass  # Menu item might not exist yet
     
-    def update_progress_bars(self, growth: float, water: float, plant_at: float):
-        """Update the progress bars with current values"""
-        # Harvest progress: 0-100% based on growth / plant_at
-        harvest_percent = min(100.0, (growth / plant_at) * 100.0) if growth >= 0 else 0.0
-        self.harvest_progress.config(value=harvest_percent)
-        
-        # Water progress: 0-100% based on water level (assuming max ~5.0)
-        max_water = 5.0
-        water_percent = min(100.0, (water / max_water) * 100.0)
-        self.water_progress.config(value=water_percent)
-    
     def update_canvas_image(self, image: tk.PhotoImage):
         """Update the canvas image"""
         self.canvas.itemconfigure(self.img_item, image=image)
@@ -186,15 +143,7 @@ class UIManager:
         x = self.btn_settings.winfo_rootx()
         y = self.btn_settings.winfo_rooty() + self.btn_settings.winfo_height()
         self.settings_menu.post(x, y)
-    
-    def _show_progress_bars(self, event: tk.Event):
-        """Show progress bars on hover"""
-        self.progress_frame.pack(side="top", after=self.canvas)
-    
-    def _hide_progress_bars(self, event: tk.Event):
-        """Hide progress bars when mouse leaves"""
-        self.progress_frame.pack_forget()
-    
+
     def create_pet_image_item(self) -> int:
         """Create pet image item on canvas"""
         return self.canvas.create_image(0, 0, anchor="center")
