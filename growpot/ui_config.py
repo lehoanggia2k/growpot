@@ -87,3 +87,14 @@ class UIConfig:
     profile_save_button: str = "Lưu"
     profile_close_button: str = "Đóng"
     profile_name_placeholder: str = "Nhập tên của bạn..."
+
+    # Popup window defaults
+    default_popup_width: int = 600
+    default_popup_height: int = 850
+    default_popup_resizable: bool = True
+
+    # Button sizes
+    button_width_buy: int = 10
+    button_height_buy: int = 2
+    button_width_close: int = 10
+    button_height_close: int = 2

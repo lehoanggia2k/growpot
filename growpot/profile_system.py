@@ -22,8 +22,8 @@ class ProfileManager:
         # Create profile dialog
         profile_win = Toplevel(root)
         profile_win.title(self.ui.profile_title)
-        profile_win.geometry("350x400")
-        profile_win.resizable(True, True)
+        profile_win.geometry(f"{self.ui.default_popup_width}x{self.ui.default_popup_height}")
+        profile_win.resizable(self.ui.default_popup_resizable, self.ui.default_popup_resizable)
 
         # Main frame
         main_frame = tk.Frame(profile_win, padx=20, pady=20)

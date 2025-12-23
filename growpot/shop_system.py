@@ -24,8 +24,8 @@ class ShopManager:
         """Create and show the shop dialog with tabbed interface"""
         shop_win = Toplevel(root)
         shop_win.title(self.ui.shop_title)
-        shop_win.geometry("500x450")
-        shop_win.resizable(True, True)
+        shop_win.geometry(f"{self.ui.default_popup_width}x{self.ui.default_popup_height}")
+        shop_win.resizable(self.ui.default_popup_resizable, self.ui.default_popup_resizable)
         
         # Main frame
         main_frame = tk.Frame(shop_win, padx=20, pady=20)
@@ -71,7 +71,9 @@ class ShopManager:
             text=self.ui.shop_close_button,
             command=shop_win.destroy,
             font=("Segoe UI", 10),
-            relief="raised"
+            relief="raised",
+            width=self.ui.button_width_close,
+            height=self.ui.button_height_close
         )
         close_btn.pack(pady=(10, 0))
     
@@ -122,21 +124,31 @@ class ShopManager:
         name_label = tk.Label(
             pet_food_frame,
             text="Pet Food",
-            font=("Segoe UI", 12, "bold")
+            font=("Segoe UI", 11, "bold")
         )
-        name_label.pack(anchor="w", pady=(0, 5))
+        name_label.pack(anchor="w", pady=(0, 3))
 
         desc_label = tk.Label(
             pet_food_frame,
             text=self.ui.shop_pet_food_desc,
-            font=("Segoe UI", 10),
+            font=("Segoe UI", 9),
             fg="gray"
         )
-        desc_label.pack(anchor="w", pady=(0, 10))
+        desc_label.pack(anchor="w", pady=(0, 3))
+
+        # Current stock info
+        current_stock = state.pet_food
+        stock_label = tk.Label(
+            pet_food_frame,
+            text=self.ui.shop_seed_stock_label.format(current_stock),
+            font=("Segoe UI", 10),
+            fg="green"
+        )
+        stock_label.pack(anchor="w", pady=(0, 5))
 
         # Pet Food Quantity selector
         pet_food_quantity_frame = tk.Frame(pet_food_frame)
-        pet_food_quantity_frame.pack(anchor="w", pady=(0, 10))
+        pet_food_quantity_frame.pack(anchor="w", pady=(0, 5))
 
         pet_food_quantity_label = tk.Label(
             pet_food_quantity_frame,
@@ -170,21 +182,21 @@ class ShopManager:
         pet_food_price_label = tk.Label(
             pet_food_frame,
             textvariable=pet_food_price_var,
-            font=("Segoe UI", 11, "bold"),
+            font=("Segoe UI", 10, "bold"),
             fg="blue"
         )
-        pet_food_price_label.pack(anchor="w", pady=(0, 10))
+        pet_food_price_label.pack(anchor="w", pady=(0, 5))
 
         # Pet Food Buy button
         pet_food_buy_btn = tk.Button(
             pet_food_frame,
             text=self.ui.shop_buy_button,
             command=lambda: self._buy_pet_food(pet_food_quantity_var.get(), shop_win, state, buy_pet_food_callback),
-            font=("Segoe UI", 14, "bold"),
+            font=("Segoe UI", 9),
             relief="raised",
             bg="lightgreen",
-            padx=20,
-            pady=10
+            width=self.ui.button_width_buy,
+            height=self.ui.button_height_buy
         )
         pet_food_buy_btn.pack(pady=(15, 0))
 
@@ -196,21 +208,31 @@ class ShopManager:
         net_name_label = tk.Label(
             net_frame,
             text="Net",
-            font=("Segoe UI", 12, "bold")
+            font=("Segoe UI", 11, "bold")
         )
-        net_name_label.pack(anchor="w", pady=(0, 5))
+        net_name_label.pack(anchor="w", pady=(0, 3))
 
         net_desc_label = tk.Label(
             net_frame,
             text="Catch bugs that appear on plants",
-            font=("Segoe UI", 10),
+            font=("Segoe UI", 9),
             fg="gray"
         )
-        net_desc_label.pack(anchor="w", pady=(0, 10))
+        net_desc_label.pack(anchor="w", pady=(0, 3))
+
+        # Current stock info
+        current_net_stock = state.net_quantity
+        net_stock_label = tk.Label(
+            net_frame,
+            text=self.ui.shop_seed_stock_label.format(current_net_stock),
+            font=("Segoe UI", 10),
+            fg="green"
+        )
+        net_stock_label.pack(anchor="w", pady=(0, 5))
 
         # Net Quantity selector
         net_quantity_frame = tk.Frame(net_frame)
-        net_quantity_frame.pack(anchor="w", pady=(0, 10))
+        net_quantity_frame.pack(anchor="w", pady=(0, 5))
 
         net_quantity_label = tk.Label(
             net_quantity_frame,
@@ -244,21 +266,21 @@ class ShopManager:
         net_price_label = tk.Label(
             net_frame,
             textvariable=net_price_var,
-            font=("Segoe UI", 11, "bold"),
+            font=("Segoe UI", 10, "bold"),
             fg="blue"
         )
-        net_price_label.pack(anchor="w", pady=(0, 10))
+        net_price_label.pack(anchor="w", pady=(0, 5))
 
         # Net Buy button
         net_buy_btn = tk.Button(
             net_frame,
             text=self.ui.shop_buy_button,
             command=lambda: self._buy_net(net_quantity_var.get(), shop_win, state, buy_net_callback),
-            font=("Segoe UI", 14, "bold"),
+            font=("Segoe UI", 9),
             relief="raised",
             bg="lightgreen",
-            padx=20,
-            pady=10
+            width=self.ui.button_width_buy,
+            height=self.ui.button_height_buy
         )
         net_buy_btn.pack(pady=(15, 0))
     
@@ -285,7 +307,7 @@ class ShopManager:
             text=plant_name,
             font=("Segoe UI", 11, "bold")
         )
-        name_label.pack(anchor="w", pady=(0, 5))
+        name_label.pack(anchor="w", pady=(0, 3))
 
         # Plant description
         plant_desc = self.shop_cfg.plant_descriptions.get(plant_type, "")
@@ -296,7 +318,7 @@ class ShopManager:
                 font=("Segoe UI", 9),
                 fg="gray"
             )
-            desc_label.pack(anchor="w", pady=(0, 5))
+            desc_label.pack(anchor="w", pady=(0, 3))
 
         # Level requirement info
         level_req_text = f"Yêu cầu Level {stats.unlock_level}"
@@ -311,7 +333,7 @@ class ShopManager:
             font=("Segoe UI", 9, "bold"),
             fg=level_color
         )
-        level_req_label.pack(anchor="w", pady=(0, 5))
+        level_req_label.pack(anchor="w", pady=(0, 3))
 
         # Current stock info
         current_stock = state.seed_inventory.get(plant_type, 0)
@@ -325,7 +347,7 @@ class ShopManager:
 
         # Quantity selector
         seed_quantity_frame = tk.Frame(seed_frame)
-        seed_quantity_frame.pack(anchor="w", pady=(0, 10))
+        seed_quantity_frame.pack(anchor="w", pady=(0, 5))
 
         seed_quantity_label = tk.Label(
             seed_quantity_frame,
@@ -359,10 +381,10 @@ class ShopManager:
         seed_price_label = tk.Label(
             seed_frame,
             textvariable=seed_price_var,
-            font=("Segoe UI", 11, "bold"),
+            font=("Segoe UI", 10, "bold"),
             fg="blue"
         )
-        seed_price_label.pack(anchor="w", pady=(0, 10))
+        seed_price_label.pack(anchor="w", pady=(0, 5))
 
         # Buy button (always available)
         buy_btn = tk.Button(
@@ -371,11 +393,11 @@ class ShopManager:
             command=lambda: self._buy_seeds(plant_type, seed_quantity_var.get(),
                                           stats.seed_price * seed_quantity_var.get(),
                                           shop_win, state, buy_callback),
-            font=("Segoe UI", 14, "bold"),
+            font=("Segoe UI", 9),
             relief="raised",
             bg="lightgreen",
-            padx=20,
-            pady=10
+            width=self.ui.button_width_buy,
+            height=self.ui.button_height_buy
         )
         buy_btn.pack(pady=(15, 0))
     
@@ -483,19 +505,121 @@ class ShopManager:
             command=lambda: self._buy_pot(pot_type, pot_stats.price, shop_win, state, buy_callback),
             font=("Segoe UI", 9),
             relief="raised",
-            bg="lightgreen"
+            bg="lightgreen",
+            width=self.ui.button_width_buy,
+            height=self.ui.button_height_buy
         )
         buy_btn.pack(side="right", padx=(10, 0))
-    
+
+    def _create_owned_pet_item(self, parent: tk.Frame, pet_type: str, state: GameState,
+                               shop_win: Toplevel, activate_callback: callable):
+        """Create owned pet item widget"""
+        pet_frame = tk.Frame(parent)
+        pet_frame.pack(fill="x", pady=5)
+
+        pet_name = pet_type.capitalize()
+
+        # Pet name and status
+        name_label = tk.Label(
+            pet_frame,
+            text=pet_name,
+            font=("Segoe UI", 11)
+        )
+        name_label.pack(side="left", anchor="w")
+
+        # Status label or activate button
+        if pet_type == state.active_pet:
+            status_label = tk.Label(
+                pet_frame,
+                text=" (Active)",
+                font=("Segoe UI", 10, "italic"),
+                fg="green"
+            )
+            status_label.pack(side="left", padx=(10, 0))
+        else:
+            activate_btn = tk.Button(
+                pet_frame,
+                text="Activate",
+                command=lambda: self._activate_pet(pet_type, shop_win, activate_callback),
+                font=("Segoe UI", 9),
+                relief="raised",
+                bg="lightblue"
+            )
+            activate_btn.pack(side="right", padx=(10, 0))
+
+    def _create_pet_purchase_item(self, parent: tk.Frame, pet_type: str, pet_stats, shop_win: Toplevel,
+                                  state: GameState, buy_callback: callable):
+        """Create pet purchase item widget"""
+        pet_frame = tk.Frame(parent)
+        pet_frame.pack(fill="x", pady=5)
+
+        pet_name = pet_type.capitalize()
+
+        # Pet name and price
+        name_label = tk.Label(
+            pet_frame,
+            text=pet_name,
+            font=("Segoe UI", 11)
+        )
+        name_label.pack(side="left", anchor="w")
+
+        price_label = tk.Label(
+            pet_frame,
+            text=self.ui.shop_price_label.format(pet_stats.unlock_cost),
+            font=("Segoe UI", 10),
+            fg="blue"
+        )
+        price_label.pack(side="left", padx=(20, 0))
+
+        # Buy button
+        buy_btn = tk.Button(
+            pet_frame,
+            text=self.ui.shop_buy_button,
+            command=lambda: self._buy_pet(pet_type, pet_stats.unlock_cost, shop_win, state, buy_callback),
+            font=("Segoe UI", 9),
+            relief="raised",
+            bg="lightgreen",
+            width=self.ui.button_width_buy,
+            height=self.ui.button_height_buy
+        )
+        buy_btn.pack(side="right", padx=(10, 0))
+
     def _populate_pets_tab(self, parent: tk.Frame, shop_win: Toplevel, state: GameState,
                           buy_callback: callable, activate_callback: callable):
-        """Populate the pets tab for purchasing pets"""
+        """Populate the pets tab with owned and available pets"""
         # Scrollable frame for pets
         canvas, scrollable_frame, scrollbar = self._create_scrollable_tab_frame(parent)
 
-        # Populate pets
+        # Owned pets section
+        owned_frame = tk.Frame(scrollable_frame, padx=20, pady=20)
+        owned_frame.pack(fill="both", expand=True)
+
+        title_label = tk.Label(
+            owned_frame,
+            text="Owned Pets:",
+            font=("Segoe UI", 12, "bold")
+        )
+        title_label.pack(anchor="w", pady=(0, 15))
+
+        # List owned pets
+        for pet_type in state.unlocked_pets:
+            self._create_owned_pet_item(owned_frame, pet_type, state, shop_win, activate_callback)
+
+        # Available pets for purchase section
+        available_frame = tk.Frame(scrollable_frame, padx=20, pady=20)
+        available_frame.pack(fill="x")
+
+        available_label = tk.Label(
+            available_frame,
+            text="Available for Purchase:",
+            font=("Segoe UI", 12, "bold")
+        )
+        available_label.pack(anchor="w", pady=(0, 10))
+
+        # List available pets
         for pet_type, pet_stats in self.cfg.PET_STATS.items():
-            self._create_pet_item(scrollable_frame, pet_type, pet_stats, state, shop_win, buy_callback, activate_callback)
+            if pet_type not in state.unlocked_pets:
+                self._create_pet_purchase_item(available_frame, pet_type, pet_stats, shop_win, state, buy_callback)
     
     def _create_pet_item(self, parent: tk.Frame, pet_type: str, pet_stats, state: GameState,
                          shop_win: Toplevel, buy_callback: callable, activate_callback: callable):
@@ -561,7 +685,9 @@ class ShopManager:
                 command=lambda: self._buy_pet(pet_type, cost, shop_win, state, buy_callback),
                 font=("Segoe UI", 9),
                 relief="raised",
-                bg="lightgreen"
+                bg="lightgreen",
+                width=self.ui.button_width_buy,
+                height=self.ui.button_height_buy
             )
             buy_btn.pack(pady=(5, 0))
     
@@ -624,8 +750,8 @@ class ShopManager:
         """Show not enough money error"""
         error_win = Toplevel(parent_window)
         error_win.title("Lỗi")
-        error_win.geometry("250x100")
-        error_win.resizable(False, False)
+        error_win.geometry(f"{self.ui.default_popup_width}x{self.ui.default_popup_height}")
+        error_win.resizable(self.ui.default_popup_resizable, self.ui.default_popup_resizable)
         
         # Center the error window
         error_win.transient(parent_window)

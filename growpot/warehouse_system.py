@@ -19,8 +19,8 @@ class WarehouseManager:
         # Create warehouse dialog
         warehouse_win = Toplevel(root)
         warehouse_win.title(self.ui.warehouse_title)
-        warehouse_win.geometry("350x300")
-        warehouse_win.resizable(False, False)
+        warehouse_win.geometry(f"{self.ui.default_popup_width}x{self.ui.default_popup_height}")
+        warehouse_win.resizable(self.ui.default_popup_resizable, self.ui.default_popup_resizable)
         
         # Main frame
         main_frame = tk.Frame(warehouse_win, padx=20, pady=20)

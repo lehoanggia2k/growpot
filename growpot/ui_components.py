@@ -256,8 +256,8 @@ class UIManager:
         # Create quest window
         quest_window = tk.Toplevel(self.root)
         quest_window.title(self.ui.quest_title)
-        quest_window.geometry("400x500")
-        quest_window.resizable(True, True)
+        quest_window.geometry(f"{self.ui.default_popup_width}x{self.ui.default_popup_height}")
+        quest_window.resizable(self.ui.default_popup_resizable, self.ui.default_popup_resizable)
         quest_window.attributes("-topmost", True)
 
         # Title

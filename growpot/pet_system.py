@@ -14,15 +14,15 @@ class PetManager:
         self.cfg = config
         self.ui = ui_config
     
-    def show_pet_status(self, root: tk.Tk, state: GameState, 
-                       feed_callback: callable, activate_callback: callable, 
+    def show_pet_status(self, root: tk.Tk, state: GameState,
+                       feed_callback: callable, activate_callback: callable,
                        deactivate_callback: callable, unlock_callback: callable):
         """Create and show the pet status dialog"""
         # Create pet status dialog
         pet_win = Toplevel(root)
         pet_win.title(self.ui.pet_status_title)
-        pet_win.geometry("300x250")
-        pet_win.resizable(False, False)
+        pet_win.geometry(f"{self.ui.default_popup_width}x{self.ui.default_popup_height}")
+        pet_win.resizable(self.ui.default_popup_resizable, self.ui.default_popup_resizable)
         
         # Main frame
         main_frame = tk.Frame(pet_win, padx=20, pady=20)
