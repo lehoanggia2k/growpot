@@ -116,7 +116,7 @@ class UIManager:
     def setup_settings_menu(self, state: GameState, water_callback: Callable, harvest_callback: Callable,
                            seed_menu_callback: Callable, reset_callback: Callable, warehouse_callback: Callable,
                            pet_status_callback: Callable, shop_callback: Callable, quests_callback: Callable,
-                           pot_menu: Menu, close_callback: Callable):
+                           profile_callback: Callable, pot_menu: Menu, close_callback: Callable):
         """Setup the settings menu with all callbacks"""
 
         # Clear existing menu items
@@ -131,6 +131,7 @@ class UIManager:
         self.settings_menu.add_command(label=self.ui.menu_pet, command=pet_status_callback)
         self.settings_menu.add_command(label=self.ui.menu_shop, command=shop_callback)
         self.settings_menu.add_command(label=self.ui.menu_quests, command=quests_callback)
+        self.settings_menu.add_command(label=self.ui.menu_profile, command=profile_callback)
         self.settings_menu.add_separator()
         self.settings_menu.add_cascade(label=self.ui.menu_change_pot, menu=pot_menu)
         self.settings_menu.add_separator()

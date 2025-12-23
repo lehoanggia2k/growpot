@@ -55,6 +55,12 @@ class GameState:
     quest_last_reset_ts: float = 0.0  # Last time quests were reset
     completed_quests_today: int = 0  # Number of quests completed today
 
+    # Profile system
+    player_name: str = "Player"  # Player's name
+    level: int = 1  # Player level
+    exp: int = 0  # Current experience points
+    avatar: str = "👤"  # Player avatar (emoji for now)
+
     def __post_init__(self):
         if self.inventory is None:
             self.inventory = {}
@@ -118,17 +124,25 @@ def load_state(path: Path = DEFAULT_STATE_FILE) -> GameState:
             daily_quests=data.get("daily_quests", []),
             quest_last_reset_ts=float(data.get("quest_last_reset_ts", 0.0)),
             completed_quests_today=int(data.get("completed_quests_today", 0)),
+            player_name=data.get("player_name", "Player"),
+            level=int(data.get("level", 1)),
+            exp=int(data.get("exp", 0)),
+            avatar=data.get("avatar", "👤"),
         )
     except Exception:
         # If state is corrupt, start fresh.
         return GameState(last_update_ts=now_ts())
 
 
-def save_state(state: GameState, path: Path = DEFAULT_STATE_FILE) -> None:
-    data = asdict(state)
-    # Convert sets to list for JSON serialization
-    if "unlocked_pots" in data and isinstance(data["unlocked_pots"], set):
-        data["unlocked_pots"] = list(data["unlocked_pots"])
-    if "unlocked_pets" in data and isinstance(data["unlocked_pets"], set):
-        data["unlocked_pets"] = list(data["unlocked_pets"])
-    path.write_text(json.dumps(data, indent=2), encoding="utf-8")
+def save_state(state: GameState, path: Path = DEFAULT_STATE_FILE) -> bool:
+    try:
+        data = asdict(state)
+        # Convert sets to list for JSON serialization
+        if "unlocked_pots" in data and isinstance(data["unlocked_pots"], set):
+            data["unlocked_pots"] = list(data["unlocked_pots"])
+        if "unlocked_pets" in data and isinstance(data["unlocked_pets"], set):
+            data["unlocked_pets"] = list(data["unlocked_pets"])
+        path.write_text(json.dumps(data, indent=2), encoding="utf-8")
+        return True
+    except Exception:
+        return False

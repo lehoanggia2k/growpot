@@ -3,15 +3,17 @@
   "water": 0.0,
   "growth_water_deficit": 0.0,
   "water_ever_depleted": false,
-  "x": 1694,
-  "y": 479,
-  "last_update_ts": 1766205503.9681013,
+  "x": 969,
+  "y": 617,
+  "last_update_ts": 1766480183.9158838,
   "pot_type": "default",
   "plant_type": "basic",
   "harvested_count": 20,
   "last_harvest_ts": 1766205477.801405,
   "money": 255,
-  "inventory": {},
+  "inventory": {
+    "basic": 20
+  },
   "seed_inventory": {
     "basic": 4,
     "rose": 5
@@ -29,42 +31,43 @@
   "net_quantity": 10,
   "daily_quests": [
     {
-      "id": "harvest_bronze_daisy",
-      "name": "Thu ho\u1ea1ch c\u01a1 b\u1ea3n",
-      "description": "Thu ho\u1ea1ch 1 c\u00e2y daisy",
-      "requirement_type": "harvest",
-      "plant_type": "daisy",
-      "requirement_count": 1,
-      "current_progress": 1,
-      "reward_money": 50,
-      "completed": true,
-      "claimed": true
-    },
-    {
-      "id": "harvest_gold_daisy",
-      "name": "Thu ho\u1ea1ch chuy\u00ean nghi\u1ec7p",
-      "description": "Thu ho\u1ea1ch 3 c\u00e2y daisy",
-      "requirement_type": "harvest",
-      "plant_type": "daisy",
-      "requirement_count": 3,
-      "current_progress": 3,
-      "reward_money": 100,
-      "completed": true,
-      "claimed": true
-    },
-    {
-      "id": "harvest_silver_basic",
+      "id": "harvest_silver_daisy",
       "name": "Thu ho\u1ea1ch n\u00e2ng cao",
-      "description": "Thu ho\u1ea1ch 6 c\u00e2y basic",
+      "description": "Thu ho\u1ea1ch 2 c\u00e2y daisy",
       "requirement_type": "harvest",
-      "plant_type": "basic",
-      "requirement_count": 6,
-      "current_progress": 6,
+      "plant_type": "daisy",
+      "requirement_count": 2,
+      "current_progress": 0,
       "reward_money": 75,
-      "completed": true,
-      "claimed": true
+      "completed": false
+    },
+    {
+      "id": "harvest_bronze_rose",
+      "name": "Thu ho\u1ea1ch c\u01a1 b\u1ea3n",
+      "description": "Thu ho\u1ea1ch 2 c\u00e2y rose",
+      "requirement_type": "harvest",
+      "plant_type": "rose",
+      "requirement_count": 2,
+      "current_progress": 0,
+      "reward_money": 50,
+      "completed": false
+    },
+    {
+      "id": "harvest_gold_rose",
+      "name": "Thu ho\u1ea1ch chuy\u00ean nghi\u1ec7p",
+      "description": "Thu ho\u1ea1ch 4 c\u00e2y rose",
+      "requirement_type": "harvest",
+      "plant_type": "rose",
+      "requirement_count": 4,
+      "current_progress": 0,
+      "reward_money": 100,
+      "completed": false
     }
   ],
-  "quest_last_reset_ts": 1766204759.7339191,
-  "completed_quests_today": 3
+  "quest_last_reset_ts": 1766478902.026192,
+  "completed_quests_today": 0,
+  "player_name": "Ram",
+  "level": 1,
+  "exp": 0,
+  "avatar": "\ud83d\udc69"
 }

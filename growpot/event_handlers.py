@@ -104,6 +104,11 @@ class EventHandler:
         """Handle quests menu click"""
         if 'show_quests' in self._callbacks:
             self._callbacks['show_quests']()
+
+    def on_show_profile(self):
+        """Handle profile menu click"""
+        if 'show_profile' in self._callbacks:
+            self._callbacks['show_profile']()
     
     def on_show_seed_menu(self):
         """Handle seed menu click"""

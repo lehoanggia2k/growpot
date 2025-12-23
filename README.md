@@ -112,8 +112,9 @@ assets/sounds/
 3. **Tưới nước**: Click vào chậu để tưới nước
 4. **Bắt côn trùng**: Click vào côn trùng khi xuất hiện trên cây (cần mua lưới trước)
 5. **Thu hoạch**: Click thu hoạch khi cây trưởng thành
-6. **Mở rộng**: Mua chậu mới, vật nuôi, lưới bắt côn trùng từ cửa hàng
-7. **Kiếm tiền**: Bán sản phẩm thu hoạch và côn trùng tại kho
+6. **Làm nhiệm vụ**: Click menu "Nhiệm vụ" để xem và hoàn thành nhiệm vụ hàng ngày
+7. **Mở rộng**: Mua chậu mới, vật nuôi, lưới bắt côn trùng từ cửa hàng
+8. **Kiếm tiền**: Bán sản phẩm thu hoạch và côn trùng tại kho
 
 ### Mẹo Chơi
 - Vật nuôi giúp tự động tưới nước khi bạn bận rộn
@@ -168,9 +169,27 @@ Dự án mã nguồn mở. Tự do sử dụng và chỉnh sửa.
 
 Muốn thêm tính năng mới hoặc assets? Xem `UPDATE_GUIDE.md` để biết cách đóng góp!
 
+## 📈 Nhật Ký Cập Nhật
+
+### Phiên bản 1.1 (22/12/2025)
+- ✅ **Thêm hệ thống nhiệm vụ hàng ngày**
+  - Nhiệm vụ thu hoạch cây theo loại cụ thể
+  - 2-3 nhiệm vụ mỗi ngày, reset tự động
+  - Phần thưởng tiền khi hoàn thành
+  - Cửa sổ nhiệm vụ có thể điều chỉnh kích thước
+- ✅ **Cải thiện UX**
+  - Cửa sổ nhiệm vụ resizable như shop
+  - Giao diện nhất quán giữa các cửa sổ
+
+### Phiên bản 1.0 (Ban đầu)
+- Hệ thống trồng cây cơ bản
+- Hệ thống vật nuôi và cửa hàng
+- Hệ thống côn trùng và kinh tế
+- UI/UX hoàn chỉnh
+
 ---
 
-**Phiên bản**: 1.0
+**Phiên bản hiện tại**: 1.1
 **Ngôn ngữ**: Python 3.10+
 **Framework**: Tkinter + Pillow
 **Tác giả**: Le Hoang Gia

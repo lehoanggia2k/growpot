@@ -13,6 +13,7 @@ from growpot.animation_system import AnimationManager
 from growpot.warehouse_system import WarehouseManager
 from growpot.pet_system import PetManager
 from growpot.shop_system import ShopManager
+from growpot.profile_system import ProfileManager
 from growpot.event_handlers import EventHandler
 
 
@@ -37,6 +38,7 @@ class GrowPlotApp:
         self.warehouse_manager = WarehouseManager(self.cfg, self.ui)
         self.pet_manager = PetManager(self.cfg, self.ui)
         self.shop_manager = ShopManager(self.cfg, self.ui)
+        self.profile_manager = ProfileManager(self.ui)
         self.event_handler = EventHandler(root, assets_dir, self.ui)
         
         # Setup window
@@ -117,6 +119,7 @@ class GrowPlotApp:
         self.event_handler.register_callback('show_pet_status', self._handle_show_pet_status)
         self.event_handler.register_callback('show_shop', self._handle_show_shop)
         self.event_handler.register_callback('show_quests', self._handle_show_quests)
+        self.event_handler.register_callback('show_profile', self._handle_show_profile)
         self.event_handler.register_callback('show_seed_menu', self._handle_show_seed_menu)
         
         # Setup drag handlers
@@ -147,6 +150,7 @@ class GrowPlotApp:
             self.event_handler.on_show_pet_status,
             self.event_handler.on_show_shop,
             self.event_handler.on_show_quests,
+            self.event_handler.on_show_profile,
             pot_menu,
             self.event_handler.on_close
         )
@@ -458,6 +462,12 @@ class GrowPlotApp:
         # Refresh settings menu to update any changes
         self._handle_show_settings_menu()
     
+    def _handle_show_profile(self):
+        """Handle profile display"""
+        self.profile_manager.show_profile(
+            self.root, self.state, lambda: save_state(self.state)
+        )
+
     def _handle_show_seed_menu(self):
         """Handle seed menu display"""
         self.event_handler.create_seed_menu(

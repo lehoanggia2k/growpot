@@ -76,3 +76,14 @@ class UIConfig:
     shop_seed_stock_label: str = "Trong kho: {}"
     shop_price_label: str = "Giá: 💰{}"
     shop_pot_owned: str = "Đã sở hữu"
+
+    # Profile system
+    menu_profile: str = "Profile"
+    profile_title: str = "👤 Profile"
+    profile_name_label: str = "Tên:"
+    profile_level_label: str = "Level: {}"
+    profile_exp_label: str = "EXP: {}/{}"
+    profile_avatar_label: str = "Avatar:"
+    profile_save_button: str = "Lưu"
+    profile_close_button: str = "Đóng"
+    profile_name_placeholder: str = "Nhập tên của bạn..."
