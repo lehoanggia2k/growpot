@@ -248,6 +248,10 @@ class GrowPlotApp:
             # Update harvested_count for backward compatibility
             self.state.harvested_count += yield_amount
 
+            # Award EXP for harvesting
+            plant_stats = self.cfg.PLANT_STATS[self.state.plant_type]
+            self.profile_manager.add_exp(self.state, plant_stats.harvest_exp_reward)
+
             # Reset animation
             self.animation_manager.reset_animation_index()
             save_state(self.state)
@@ -268,6 +272,11 @@ class GrowPlotApp:
         current_stock = self.state.seed_inventory.get(plant_type, 0)
         if current_stock <= 0:
             return  # No seeds available, cannot plant
+
+        # Check if player level meets unlock requirement
+        plant_stats = self.cfg.PLANT_STATS[plant_type]
+        if self.state.level < plant_stats.unlock_level:
+            return  # Player level too low, cannot plant
 
         # Use existing seeds (these get consumed)
         self.state.seed_inventory[plant_type] -= 1

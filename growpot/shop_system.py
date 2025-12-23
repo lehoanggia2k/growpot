@@ -298,6 +298,21 @@ class ShopManager:
             )
             desc_label.pack(anchor="w", pady=(0, 5))
 
+        # Level requirement info
+        level_req_text = f"Yêu cầu Level {stats.unlock_level}"
+        if state.level >= stats.unlock_level:
+            level_color = "green"
+        else:
+            level_color = "red"
+
+        level_req_label = tk.Label(
+            seed_frame,
+            text=level_req_text,
+            font=("Segoe UI", 9, "bold"),
+            fg=level_color
+        )
+        level_req_label.pack(anchor="w", pady=(0, 5))
+
         # Current stock info
         current_stock = state.seed_inventory.get(plant_type, 0)
         stock_label = tk.Label(

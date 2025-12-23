@@ -171,20 +171,38 @@ class EventHandler:
                 stats = cfg.PLANT_STATS[plant_type]
                 plant_name = plant_type.capitalize()
                 current_stock = state.seed_inventory.get(plant_type, 0)
-                
+
                 if current_stock > 0:
-                    label = f"{plant_name} ({self.ui.shop_seed_stock_label.format(current_stock)})"
+                    if state.level >= stats.unlock_level:
+                        label = f"{plant_name} ({self.ui.shop_seed_stock_label.format(current_stock)})"
+                    else:
+                        label = f"{plant_name} (Level {stats.unlock_level} cần thiết)"
                 else:
                     cost = stats.seed_price
                     if cost == 0:
-                        label = self.ui.seed_free_label.format(plant_name)
+                        if state.level >= stats.unlock_level:
+                            label = self.ui.seed_free_label.format(plant_name)
+                        else:
+                            label = f"{plant_name} (Level {stats.unlock_level} cần thiết)"
                     else:
-                        label = self.ui.seed_cost_label.format(plant_name, cost)
-                
-                seed_menu.add_command(
-                    label=label,
-                    command=lambda pt=plant_type: plant_seed_callback(pt)
-                )
+                        if state.level >= stats.unlock_level:
+                            label = self.ui.seed_cost_label.format(plant_name, cost)
+                        else:
+                            label = f"{plant_name} (Level {stats.unlock_level} cần thiết)"
+
+                # Only add command if player has stock or meets level requirement
+                if current_stock > 0 or state.level >= stats.unlock_level:
+                    seed_menu.add_command(
+                        label=label,
+                        command=lambda pt=plant_type: plant_seed_callback(pt)
+                    )
+                else:
+                    # Add disabled item for plants that require higher level
+                    seed_menu.add_command(
+                        label=label + " - Chưa đủ level",
+                        command=lambda: None,  # Disabled
+                        state="disabled"
+                    )
         
         # Position menu below settings button
         if 'get_settings_button' in self._callbacks:

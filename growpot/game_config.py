@@ -7,6 +7,8 @@ class PlantStats:
     yield_amount: int  # Number of items harvested
     seed_price: int  # Cost to buy seed
     harvest_price_per_item: int  # Sell price per harvested item
+    harvest_exp_reward: int  # EXP gained when harvesting this plant
+    unlock_level: int  # Player level required to unlock this plant
 
 
 @dataclass(frozen=True)
@@ -118,9 +120,9 @@ class GameConfig:
 
     # Plant stats
     PLANT_STATS: dict[str, PlantStats] = field(default_factory=lambda: {
-        "basic": PlantStats(growth_time_sec=10.0, yield_amount=1, seed_price=0, harvest_price_per_item=20),
-        "rose": PlantStats(growth_time_sec=15.0, yield_amount=1, seed_price=20, harvest_price_per_item=30),
-        "daisy": PlantStats(growth_time_sec=20.0, yield_amount=2, seed_price=30, harvest_price_per_item=30),
+        "basic": PlantStats(growth_time_sec=10.0, yield_amount=1, seed_price=0, harvest_price_per_item=20, harvest_exp_reward=10, unlock_level=1),
+        "rose": PlantStats(growth_time_sec=15.0, yield_amount=1, seed_price=20, harvest_price_per_item=30, harvest_exp_reward=15, unlock_level=3),
+        "daisy": PlantStats(growth_time_sec=20.0, yield_amount=2, seed_price=30, harvest_price_per_item=30, harvest_exp_reward=20, unlock_level=5),
     })
 
     # Pot stats
