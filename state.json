@@ -1,22 +1,22 @@
 {
-  "growth": -1.0,
+  "growth": 134.0686548509168,
   "water": 0.0,
   "growth_water_deficit": 0.0,
-  "water_ever_depleted": false,
-  "x": 0,
-  "y": 0,
-  "last_update_ts": 1766492357.0936701,
-  "pot_type": "wood",
+  "water_ever_depleted": true,
+  "x": 1486,
+  "y": 533,
+  "last_update_ts": 1766496704.2426808,
+  "pot_type": "default",
   "plant_type": "basic",
-  "harvested_count": 21,
-  "last_harvest_ts": 1766480800.6580336,
+  "harvested_count": 26,
+  "last_harvest_ts": 1766495893.8688748,
   "money": 55,
   "inventory": {
-    "basic": 21
+    "basic": 26
   },
   "seed_inventory": {
-    "basic": 3,
-    "rose": 5
+    "rose": 5,
+    "basic": 1
   },
   "unlocked_pots": [
     "default",
@@ -69,6 +69,6 @@
   "completed_quests_today": 0,
   "player_name": "Ram",
   "level": 1,
-  "exp": 10,
-  "avatar": "\ud83d\udc69"
+  "exp": 60,
+  "avatar": "\ud83d\udc71"
 }
