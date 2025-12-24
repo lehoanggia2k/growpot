@@ -10,11 +10,11 @@ def _draw_pot(pot_type: str, frame_index: int, size: int = 96) -> Image.Image:
     img = Image.new("RGBA", (size, size), (0, 0, 0, 0))
     d = ImageDraw.Draw(img)
 
-    if pot_type == "default":
+    if pot_type == "earth":
         pot_color = (130 + (frame_index % 3) * 5, 80, 50, 255)
         d.rectangle([size * 0.25, size * 0.60, size * 0.75, size * 0.92], fill=pot_color)
         d.rectangle([size * 0.20, size * 0.55, size * 0.80, size * 0.60], fill=(150, 95, 60, 255))
-    elif pot_type == "wood":
+    elif pot_type == "flame":
         # Wooden pot: darker, more brown
         wood_color = (80 + (frame_index % 3) * 3, 50, 30, 255)
         d.rectangle([size * 0.25, size * 0.60, size * 0.75, size * 0.92], fill=wood_color)
@@ -32,7 +32,7 @@ def _draw_plant(plant_type: str, stage: str, frame_index: int, size: int = 96) -
     img = Image.new("RGBA", (size, size), (0, 0, 0, 0))
     d = ImageDraw.Draw(img)
 
-    if plant_type == "basic":
+    if plant_type == "leaf":
         if stage != "seed":
             green = (30, 160, 60, 255)
             sway = (frame_index % 5) - 2
@@ -46,7 +46,7 @@ def _draw_plant(plant_type: str, stage: str, frame_index: int, size: int = 96) -
             # add a little flower
             pink = (240, 120, 200, 255)
             d.ellipse([size * 0.46, size * 0.22, size * 0.54, size * 0.30], fill=pink)
-    elif plant_type == "rose":
+    elif plant_type == "water":
         if stage != "seed":
             green = (40, 180, 40, 255)
             sway = (frame_index % 4) - 1.5
@@ -67,7 +67,7 @@ def generate_assets(assets_dir: Path, size: int = 96, frames_per_stage: int = 12
     stages = ["seed", "sprout", "plant"]
 
     # Generate pot assets
-    pot_types = ["default", "wood"]
+    pot_types = ["earth", "flame"]
     for pot_type in pot_types:
         pot_dir = assets_dir / "pots" / pot_type
         pot_dir.mkdir(parents=True, exist_ok=True)
@@ -78,7 +78,7 @@ def generate_assets(assets_dir: Path, size: int = 96, frames_per_stage: int = 12
                 img.save(pot_dir / f"frame_{i:03d}.png")
 
     # Generate plant assets for each type and stage
-    plant_types = ["basic", "rose"]
+    plant_types = ["leaf", "water"]
     for plant_type in plant_types:
         for stage in stages:
             plant_stage_dir = assets_dir / "plants" / plant_type / stage

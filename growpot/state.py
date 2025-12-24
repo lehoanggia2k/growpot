@@ -25,8 +25,8 @@ class GameState:
     last_update_ts: float = 0.0
 
     # Customization
-    pot_type: str = "default"
-    plant_type: str = "basic"
+    pot_type: str = "earth"
+    plant_type: str = "leaf"
 
     # Progress
     harvested_count: int = 0
@@ -67,7 +67,7 @@ class GameState:
         if self.seed_inventory is None:
             self.seed_inventory = {}
         if self.unlocked_pots is None:
-            self.unlocked_pots = {"default"}  # Basic pot is unlocked by default
+            self.unlocked_pots = {"earth"}  # Basic pot is unlocked by default
         if self.unlocked_pets is None:
             self.unlocked_pets = set()  # No pets unlocked by default
         if self.daily_quests is None:
@@ -105,14 +105,14 @@ def load_state(path: Path = DEFAULT_STATE_FILE) -> GameState:
             x=data.get("x"),
             y=data.get("y"),
             last_update_ts=float(data.get("last_update_ts", now_ts())),
-            pot_type=data.get("pot_type", "default"),
+            pot_type=data.get("pot_type", "earth"),
             plant_type=data.get("plant_type", "basic"),
             harvested_count=harvested_count,  # Keep for backward compatibility
             last_harvest_ts=float(data.get("last_harvest_ts", 0.0)),
             money=int(data.get("money", 0)),
             inventory=inventory,
             seed_inventory=data.get("seed_inventory", {}),
-            unlocked_pots=set(data.get("unlocked_pots", ["default"])),
+            unlocked_pots=set(data.get("unlocked_pots", ["earth"])),
             active_pet=data.get("active_pet"),
             pet_last_fed_ts=float(data.get("pet_last_fed_ts", 0.0)),
             pet_last_worked_ts=float(data.get("pet_last_worked_ts", 0.0)),

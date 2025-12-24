@@ -1,26 +1,28 @@
 {
   "growth": -1.0,
-  "water": 8.294622579994611,
+  "water": 0.0,
   "growth_water_deficit": 0.0,
   "water_ever_depleted": false,
   "x": 0,
   "y": 0,
-  "last_update_ts": 1766545877.41554,
-  "pot_type": "default",
-  "plant_type": "basic",
-  "harvested_count": 29,
-  "last_harvest_ts": 1766498374.6587024,
-  "money": 55,
+  "last_update_ts": 1766567192.7024453,
+  "pot_type": "mistic",
+  "plant_type": "leaf",
+  "harvested_count": 65,
+  "last_harvest_ts": 1766567190.935336,
+  "money": 205,
   "inventory": {
-    "basic": 29
+    "basic": 64,
+    "leaf": 1
   },
   "seed_inventory": {
-    "rose": 5,
-    "basic": 9
+    "water": 4,
+    "leaf": 6
   },
   "unlocked_pots": [
-    "wood",
-    "default"
+    "flame",
+    "mistic",
+    "earth"
   ],
   "active_pet": null,
   "pet_last_fed_ts": 0.0,
@@ -36,7 +38,7 @@
       "name": "Thu ho\u1ea1ch c\u01a1 b\u1ea3n",
       "description": "Thu ho\u1ea1ch 1 c\u00e2y daisy",
       "requirement_type": "harvest",
-      "plant_type": "daisy",
+      "plant_type": "fire",
       "requirement_count": 1,
       "current_progress": 0,
       "reward_money": 50,
@@ -47,7 +49,7 @@
       "name": "Thu ho\u1ea1ch n\u00e2ng cao",
       "description": "Thu ho\u1ea1ch 2 c\u00e2y daisy",
       "requirement_type": "harvest",
-      "plant_type": "daisy",
+      "plant_type": "fire",
       "requirement_count": 2,
       "current_progress": 0,
       "reward_money": 75,
@@ -58,9 +60,9 @@
       "name": "Thu ho\u1ea1ch c\u01a1 b\u1ea3n",
       "description": "Thu ho\u1ea1ch 4 c\u00e2y basic",
       "requirement_type": "harvest",
-      "plant_type": "basic",
+      "plant_type": "leaf",
       "requirement_count": 4,
-      "current_progress": 0,
+      "current_progress": 3,
       "reward_money": 50,
       "completed": false
     }
@@ -68,7 +70,7 @@
   "quest_last_reset_ts": 1766545061.6162536,
   "completed_quests_today": 0,
   "player_name": "Ram",
-  "level": 1,
-  "exp": 90,
+  "level": 10,
+  "exp": 135,
   "avatar": "\ud83d\udc71"
 }

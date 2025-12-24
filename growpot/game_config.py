@@ -66,9 +66,10 @@ class ShopConfig:
     })
     # Initial seed stock for each plant type
     initial_seed_stock: dict[str, int] = field(default_factory=lambda: {
-        "basic": 10,  # Start with 10 basic seeds
-        "rose": 5,   # Start with 5 rose seeds
-        "daisy": 3,  # Start with 3 daisy seeds
+        "leaf": 10,  # Start with 10 leaf seeds
+        "water": 5,   # Start with 5 water seeds
+        "fire": 3,  # Start with 3 fire seeds
+        "dark": 2,   # Start with 2 dark seeds
     })
     # Initial pet food stock
     initial_pet_food: int = 5
@@ -80,15 +81,18 @@ class ShopConfig:
     
     # Plant descriptions
     plant_descriptions: dict[str, str] = field(default_factory=lambda: {
-        "basic": "Fast growing plant (10s). Basic yield. Good for beginners.",
-        "rose": "Beautiful flower (15s growth). Sells for good price.",
-        "daisy": "Quick growing (20s). Double yield compared to basic."
+        "leaf": "Fast growing plant (10s). Basic yield. Good for beginners.",
+        "water": "Beautiful flower (15s growth). Sells for good price.",
+        "fire": "Quick growing (20s). Double yield compared to basic.",
+        "dark": "Rare mysterious plant (25s growth). Triple yield but expensive."
     })
     
     # Pot descriptions
     pot_descriptions: dict[str, str] = field(default_factory=lambda: {
-        "default": "Basic pot with no bonuses. Free to use.",
-        "wood": "Premium pot. 10% faster growth and 30% better water retention."
+        "earth": "Basic pot with no bonuses. Free to use.",
+        "flame": "Premium pot. 10% faster growth and 30% better water retention.",
+        "sea": "Bronze pot. 15% faster growth and 40% better water retention.",
+        "mistic": "Diamond pot. 25% faster growth and 60% better water retention."
     })
 
 
@@ -120,15 +124,18 @@ class GameConfig:
 
     # Plant stats
     PLANT_STATS: dict[str, PlantStats] = field(default_factory=lambda: {
-        "basic": PlantStats(growth_time_sec=10.0, yield_amount=1, seed_price=0, harvest_price_per_item=20, harvest_exp_reward=10, unlock_level=1),
-        "rose": PlantStats(growth_time_sec=15.0, yield_amount=1, seed_price=20, harvest_price_per_item=30, harvest_exp_reward=15, unlock_level=3),
-        "daisy": PlantStats(growth_time_sec=20.0, yield_amount=2, seed_price=30, harvest_price_per_item=30, harvest_exp_reward=20, unlock_level=5),
+        "leaf": PlantStats(growth_time_sec=10.0, yield_amount=1, seed_price=0, harvest_price_per_item=20, harvest_exp_reward=10, unlock_level=1),
+        "water": PlantStats(growth_time_sec=15.0, yield_amount=1, seed_price=20, harvest_price_per_item=30, harvest_exp_reward=15, unlock_level=3),
+        "fire": PlantStats(growth_time_sec=20.0, yield_amount=2, seed_price=30, harvest_price_per_item=30, harvest_exp_reward=20, unlock_level=5),
+        "dark": PlantStats(growth_time_sec=25.0, yield_amount=3, seed_price=50, harvest_price_per_item=40, harvest_exp_reward=25, unlock_level=8),
     })
 
     # Pot stats
     POT_STATS: dict[str, PotStats] = field(default_factory=lambda: {
-        "default": PotStats(growth_time_reduction_percent=0.0, water_decay_reduction_percent=0.0, price=0),  # Free default
-        "wood": PotStats(growth_time_reduction_percent=0.1, water_decay_reduction_percent=0.3, price=200),  # 10% growth reduction, 30% water retention, costs 200
+        "earth": PotStats(growth_time_reduction_percent=0.0, water_decay_reduction_percent=0.0, price=0),  # Free default
+        "flame": PotStats(growth_time_reduction_percent=0.1, water_decay_reduction_percent=0.3, price=200),  # 10% growth reduction, 30% water retention, costs 200
+        "sea": PotStats(growth_time_reduction_percent=0.15, water_decay_reduction_percent=0.4, price=300),  # 15% growth reduction, 40% water retention, costs 300
+        "mistic": PotStats(growth_time_reduction_percent=0.25, water_decay_reduction_percent=0.6, price=500),  # 25% growth reduction, 60% water retention, costs 500
     })
 
     # Pet stats
@@ -138,86 +145,113 @@ class GameConfig:
 
     # Daily quest templates (base templates that will be modified with specific plant types)
     QUEST_TEMPLATES: dict[str, QuestTemplate] = field(default_factory=lambda: {
-        "harvest_bronze_basic": QuestTemplate(
-            id="harvest_bronze_basic",
+        "harvest_bronze_leaf": QuestTemplate(
+            id="harvest_bronze_leaf",
             name="Thu hoạch cơ bản",
-            description="Thu hoạch 4 cây basic",
+            description="Thu hoạch 4 cây leaf",
             requirement_type="harvest",
-            plant_type="basic",
+            plant_type="leaf",
             requirement_count=4,
             reward_money=50
         ),
-        "harvest_bronze_rose": QuestTemplate(
-            id="harvest_bronze_rose",
+        "harvest_bronze_water": QuestTemplate(
+            id="harvest_bronze_water",
             name="Thu hoạch cơ bản",
-            description="Thu hoạch 2 cây rose",
+            description="Thu hoạch 2 cây water",
             requirement_type="harvest",
-            plant_type="rose",
+            plant_type="water",
             requirement_count=2,
             reward_money=50
         ),
-        "harvest_bronze_daisy": QuestTemplate(
-            id="harvest_bronze_daisy",
+        "harvest_bronze_fire": QuestTemplate(
+            id="harvest_bronze_fire",
             name="Thu hoạch cơ bản",
-            description="Thu hoạch 1 cây daisy",
+            description="Thu hoạch 1 cây fire",
             requirement_type="harvest",
-            plant_type="daisy",
+            plant_type="fire",
             requirement_count=1,
             reward_money=50
         ),
-        "harvest_silver_basic": QuestTemplate(
-            id="harvest_silver_basic",
+        "harvest_silver_leaf": QuestTemplate(
+            id="harvest_silver_leaf",
             name="Thu hoạch nâng cao",
-            description="Thu hoạch 6 cây basic",
+            description="Thu hoạch 6 cây leaf",
             requirement_type="harvest",
-            plant_type="basic",
+            plant_type="leaf",
             requirement_count=6,
             reward_money=75
         ),
-        "harvest_silver_rose": QuestTemplate(
-            id="harvest_silver_rose",
+        "harvest_silver_water": QuestTemplate(
+            id="harvest_silver_water",
             name="Thu hoạch nâng cao",
-            description="Thu hoạch 3 cây rose",
+            description="Thu hoạch 3 cây water",
             requirement_type="harvest",
-            plant_type="rose",
+            plant_type="water",
             requirement_count=3,
             reward_money=75
         ),
-        "harvest_silver_daisy": QuestTemplate(
-            id="harvest_silver_daisy",
+        "harvest_silver_fire": QuestTemplate(
+            id="harvest_silver_fire",
             name="Thu hoạch nâng cao",
-            description="Thu hoạch 2 cây daisy",
+            description="Thu hoạch 2 cây fire",
             requirement_type="harvest",
-            plant_type="daisy",
+            plant_type="fire",
             requirement_count=2,
             reward_money=75
         ),
-        "harvest_gold_basic": QuestTemplate(
-            id="harvest_gold_basic",
+        "harvest_gold_leaf": QuestTemplate(
+            id="harvest_gold_leaf",
             name="Thu hoạch chuyên nghiệp",
-            description="Thu hoạch 8 cây basic",
+            description="Thu hoạch 8 cây leaf",
             requirement_type="harvest",
-            plant_type="basic",
+            plant_type="leaf",
             requirement_count=8,
             reward_money=100
         ),
-        "harvest_gold_rose": QuestTemplate(
-            id="harvest_gold_rose",
+        "harvest_gold_water": QuestTemplate(
+            id="harvest_gold_water",
             name="Thu hoạch chuyên nghiệp",
-            description="Thu hoạch 4 cây rose",
+            description="Thu hoạch 4 cây water",
             requirement_type="harvest",
-            plant_type="rose",
+            plant_type="water",
             requirement_count=4,
             reward_money=100
         ),
-        "harvest_gold_daisy": QuestTemplate(
-            id="harvest_gold_daisy",
+        "harvest_gold_fire": QuestTemplate(
+            id="harvest_gold_fire",
             name="Thu hoạch chuyên nghiệp",
-            description="Thu hoạch 3 cây daisy",
+            description="Thu hoạch 3 cây fire",
             requirement_type="harvest",
-            plant_type="daisy",
+            plant_type="fire",
             requirement_count=3,
             reward_money=100
+        ),
+        "harvest_bronze_dark": QuestTemplate(
+            id="harvest_bronze_dark",
+            name="Thu hoạch cơ bản",
+            description="Thu hoạch 1 cây dark",
+            requirement_type="harvest",
+            plant_type="dark",
+            requirement_count=1,
+            reward_money=60
+        ),
+        "harvest_silver_dark": QuestTemplate(
+            id="harvest_silver_dark",
+            name="Thu hoạch nâng cao",
+            description="Thu hoạch 2 cây dark",
+            requirement_type="harvest",
+            plant_type="dark",
+            requirement_count=2,
+            reward_money=90
+        ),
+        "harvest_gold_dark": QuestTemplate(
+            id="harvest_gold_dark",
+            name="Thu hoạch chuyên nghiệp",
+            description="Thu hoạch 3 cây dark",
+            requirement_type="harvest",
+            plant_type="dark",
+            requirement_count=3,
+            reward_money=120
         ),
     })
 
